@@ -1,0 +1,126 @@
+body {
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/wall.jpg');
+    margin-left: 0px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    color: white;
+}
+
+.app {
+    z-index: 0;
+    position: sticky;
+    display: inline-block;
+    width: 6%;
+    height: fit-content;
+    padding: 10px;
+    /* border: 1px solid black; */
+    margin-left: 10px;
+    margin-right: 10px;
+    /* max-width: 50%; */
+}
+
+.icon {
+    height: fit-content;
+    width: 80%;
+    margin: auto;
+
+    box-sizing: border-box;
+    margin-bottom: 0px;
+    border-radius: 3px;
+}
+
+.name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 2vh;
+    line-height: 1.2rem;
+    width: fit-content;
+    margin: auto;
+    padding: 2px 1px 2px 1px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.icon img {
+    width: 100%;
+    height: auto;
+}
+
+.app:hover .icon,
+.app:hover .name {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+
+.select .name,
+.select .icon,
+.select:hover .name,
+.select:hover .icon {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.nav {
+    background-color: transparent;
+    box-sizing: border-box;
+    width: 100%;
+    height: 10%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    top: 90%;
+    margin: 0;
+}
+
+.cont {
+    /* display: flex; */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+    width: fit-content;
+    height: 100%;
+    justify-content: center;
+
+}
+
+.nav .icon {
+    display: flex;
+    position: relative;
+    bottom: 0%;
+    width: auto;
+    height: 100%;
+    margin: 0px;
+    float: left;
+    transition: .2s linear;
+}
+
+.nav .icon img {
+    height: 100%;
+    margin: 0px;
+    width: auto;
+}
+
+
+.nav .icon:hover {
+    bottom: 40%;
+    height: 120%;
+}
+
+.nav .icon:hover+.icon,
+.nav .icon:has(+.icon:hover) {
+    bottom: 30%;
+    height: 110%;
+}
+
+
+/* .select {
+    z-index: 1;
+    position: relative;
+    /* right: 0%; 
+} */
