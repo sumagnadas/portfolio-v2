@@ -4,31 +4,13 @@
 <head>
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- important for responsiveness -->
-    <script>
-        function select(id) {
-            var x = document.getElementById(id);
-            var y = document.getElementsByClassName('select');
-
-            if (y.length == 1)
-                y[0].classList.remove("select");
-
-            x.classList.add("select");
-        }
-        function remove() {
-            var x = document.getElementsByClassName('select');
-            console.log(x.length);
-            for (; x.length > 0;) {
-                x[0].classList.remove("select");
-            }
-        }
-    </script>
+    <script src="js/main.js"></script>
     <title>Test portfolio website</title>
 </head>
 
 
 <body onclick="remove()">
-    <!-- <div onclick="remove()" style="z-index: -1;max-width: 100%;height: 100%;position: absolute;top:0%"></div> -->
-    <div class="app">
+    <div class="app" onclick="selection(this.id)" id="file">
         <div class="icon">
             <img src="assets/test.png" alt="text">
         </div>
@@ -36,8 +18,7 @@
             hello
         </div>
     </div><br>
-    <!-- <div class="right-cont"> -->
-    <div class="app" onclick="select('TING')" id="TING">
+    <div class="app" onclick="selection(this.id)" id="TING">
         <div class="icon">
             <img src="assets/test.png" alt="text">
         </div>
@@ -45,7 +26,7 @@
             There Is NO Game Wrong Dimension
         </div>
     </div><br>
-    <div class="app" onclick="select('random')" id="random">
+    <div class="app" onclick="selection(this.id)" id="random">
         <div class="icon">
             <img src="assets/test.png" alt="text">
         </div>
