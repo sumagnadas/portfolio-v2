@@ -20,8 +20,8 @@ function showModal() {
     modal.dragged = false;
     const drag = function (e) {
         if (modal.classList.contains('dragged')) {
-            offsetX = offsetX ?? e.offsetX;
-            offsetY = offsetY ?? e.offsetY;
+            offsetX = offsetX ?? (e.pageX - modal.offsetLeft);
+            offsetY = offsetY ?? (e.pageY - modal.offsetTop);
             modal.style.left = `${e.pageX - offsetX}px`;
             modal.style.top = `${e.pageY - offsetY}px`;
         }
@@ -29,17 +29,17 @@ function showModal() {
 
     title_bar.addEventListener('mousedown', (e) => modal.classList.add('dragged'))
     document.body.addEventListener('mousemove', drag)// added to body as it can be dragged anywhere
-    title_bar.addEventListener('mouseup', (e) => modal.classList.remove('dragged'));
+    title_bar.addEventListener('mouseup', (e) => { modal.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
 
     title_bar.appendChild(close_button);
     close_button.addEventListener('click', function (e) { modal.remove() })
     modal.appendChild(title_bar);
     modal.appendChild(document.createTextNode('Hello'));
-    document.body.insertAdjacentElement('afterbegin', modal);
+    document.body.insertAdjacentElement('beforeend', modal);
     modal.style.display = 'block';
 
     if (modals.length > 1) {
-        let last = document.body.childNodes[1];
+        let last = document.body.childNodes[document.body.childNodes.length - 2];
         console.log(last);
         modal.style.top = `${last.offsetTop + 10}px`;
         modal.style.left = `${last.offsetLeft + 10}px`;
