@@ -1,15 +1,31 @@
-let justnow = false;
 (function () {
     const apps = document.getElementsByClassName('app');
     for (let app of apps) {
-        // const selec = selection.apply(null, [app.id]);
         app.addEventListener('click', (e) => selection(app.id));
-        app.addEventListener('dblclick', showModal);
+        app.addEventListener('dblclick', (e) => showModal(app.id));
+        app.addEventListener('dblclick', (e) => addApp(app.id));
     }
 })()
+function addApp(id) {
+    const img = document.getElementById(id).firstElementChild.firstElementChild;
+    console.log(img)
+    const navbar = document.getElementsByClassName('cont');// this is the container of the navbar elements
+    const icon = document.createElement('div');
+    icon.classList.add('icon');
+    icon.id = `app-${id}`;
+    const new_img = document.createElement('img');
+    new_img.src = img.src
+    new_img.alt = img.alt;
+    icon.appendChild(new_img);
+    navbar[0].appendChild(icon);
+}
+function removeApp(id) {
+    const icon = document.getElementById(`app-${id}`);
+    icon.remove();
+}
 
 let offsetX, offsetY;
-function showModal() {
+function showModal(id) { // too much extra code, will clean later
     const modals = document.getElementsByClassName('modal');
     const modal = document.createElement('div');
     modal.classList.add('modal');
@@ -32,7 +48,7 @@ function showModal() {
     document.body.addEventListener('mouseup', (e) => { modal.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
 
     title_bar.appendChild(close_button);
-    close_button.addEventListener('click', function (e) { modal.remove() })
+    close_button.addEventListener('click', function (e) { modal.remove(); removeApp(id) })
     modal.appendChild(title_bar);
     modal.appendChild(document.createTextNode('Hello'));
     document.body.insertAdjacentElement('beforeend', modal);
@@ -49,6 +65,8 @@ function showModal() {
         modal.style.left = `${modal.offsetLeft}px`;
     }
 }
+
+let appPressed = false;
 function selection(id) {
     if (id) {
         let x = document.getElementById(id);
@@ -58,11 +76,11 @@ function selection(id) {
             y[0].classList.remove("select");
 
         x.classList.add("select");
-        justnow = true;
+        appPressed = true;
     }
 }
 function remove() {
-    if (!justnow) { // countering for the effect that pressing on the icon also triggers this function
+    if (!appPressed) { // countering for the effect that pressing on the icon also triggers this function
         var x = document.getElementsByClassName('select');
         for (; x.length > 0;) {
             x[0].classList.remove("select");
