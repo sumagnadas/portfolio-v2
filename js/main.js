@@ -29,7 +29,7 @@ function showModal() {
 
     title_bar.addEventListener('mousedown', (e) => modal.classList.add('dragged'))
     document.body.addEventListener('mousemove', drag)// added to body as it can be dragged anywhere
-    title_bar.addEventListener('mouseup', (e) => { modal.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
+    document.body.addEventListener('mouseup', (e) => { modal.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
 
     title_bar.appendChild(close_button);
     close_button.addEventListener('click', function (e) { modal.remove() })
