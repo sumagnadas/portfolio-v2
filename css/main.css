@@ -3,6 +3,18 @@ html {
     overflow: hidden;
 }
 
+body:not(.modal, .nav) {
+    z-index: 0;
+}
+
+.nav {
+    z-index: 3;
+}
+
+.modal {
+    z-index: 1;
+}
+
 body {
     width: 100%;
     height: 100%;
@@ -37,6 +49,8 @@ body {
 }
 
 .modal {
+    min-width: 10px;
+    min-height: 10px;
     width: 200px;
     height: 100px;
     position: absolute;
