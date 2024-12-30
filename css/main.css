@@ -11,7 +11,7 @@ body:not(.modal, .nav) {
     z-index: 3;
 }
 
-.modal {
+.window {
     z-index: 1;
 }
 
@@ -56,8 +56,8 @@ body {
     position: absolute;
     top: 20%;
     left: 30%;
-    display: none;
     background-color: rgba(200, 44, 100, 0.4);
+    overflow: hidden;
 }
 
 .title_bar {
