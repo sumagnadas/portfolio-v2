@@ -70,12 +70,24 @@ body {
     /* align-self: ; */
 }
 
-.close {
+.title {
     border-radius: 50%;
     width: 5%;
     height: 100%;
     display: flex;
+}
+
+.close {
+
     background-color: red;
+}
+
+.title_bar .max {
+    background-color: mediumspringgreen;
+}
+
+.hide {
+    background-color: skyblue;
 }
 
 .name {

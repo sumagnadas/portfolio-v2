@@ -4,8 +4,8 @@
     const apps = document.getElementsByClassName('app');
     document.body.addEventListener('mousemove', dragAndResize)// added to body as it can be dragged and resized anywhere
     document.body.addEventListener('mousedown', e => {
-        const window = document.getElementById('resized');
-        if (window ?? false) {
+        const appWindow = document.getElementById('resized');
+        if (appWindow ?? false) {
             beingResized = true;
         }
     })// start resizing if its in a border of a window
@@ -17,6 +17,7 @@
         if (elem ?? false)
             elem.removeAttribute('id');
     })// stop resizing if its in a border of a window
+    document.body.addEventListener('click', removeSelection);
     for (let app of apps) {
         app.addEventListener('click', (e) => selection(app.id));
         app.addEventListener('dblclick', (e) => showWindow(app.id));
@@ -55,27 +56,27 @@ function removeApp(id) {
 
 let beingResized = false;
 // resize the window accordingly
-function resize(window, posX, posY, sizeX, sizeY, moveX, moveY) {
+function resize(appWindow, posX, posY, sizeX, sizeY, moveX, moveY) {
     if (sizeX && moveX) {
         // cursor on the left side
         // dont move the window by resizing or anything if its already at the min width
-        if (posX <= window.offsetLeft + window.offsetWidth - 10) {
-            window.style.width = `${window.offsetWidth - (posX - window.offsetLeft)}px`;
-            window.style.left = `${posX}px`
+        if (posX <= appWindow.offsetLeft + appWindow.offsetWidth - 10) {
+            appWindow.style.width = `${appWindow.offsetWidth - (posX - appWindow.offsetLeft)}px`;
+            appWindow.style.left = `${posX}px`
         }
     }
     else if (sizeX) // cursor on the right side
-        window.style.width = `${window.offsetWidth + (posX - window.offsetLeft - window.offsetWidth)}px`;
+        appWindow.style.width = `${appWindow.offsetWidth + (posX - appWindow.offsetLeft - appWindow.offsetWidth)}px`;
     if (sizeY && moveY) {
         // cursor on the top side
         // dont move the window by resizing or anything if its already at the min height
-        if (posY <= window.offsetTop + window.offsetHeight - 10) {
-            window.style.height = `${window.offsetHeight - (posY - window.offsetTop)}px`;
-            window.style.top = `${posY}px`
+        if (posY <= appWindow.offsetTop + appWindow.offsetHeight - 10) {
+            appWindow.style.height = `${appWindow.offsetHeight - (posY - appWindow.offsetTop)}px`;
+            appWindow.style.top = `${posY}px`
         }
     }
     else if (sizeY) // cursor on the bottom side
-        window.style.height = `${window.offsetHeight + (posY - window.offsetTop - window.offsetHeight)}px`;
+        appWindow.style.height = `${appWindow.offsetHeight + (posY - appWindow.offsetTop - appWindow.offsetHeight)}px`;
 }
 // states whether only the size is increasing in X,Y axes resp (sizeX, sizeY)
 // or is the top left corner (moveX, moveY) also going to be moved as if the window is being resized
@@ -86,26 +87,28 @@ let sizeX = false, sizeY = false, moveX = false, moveY = false;
 let offsetX, offsetY;
 // drag the window around or set the parameters for resizing
 function dragAndResize(e) {
-    const windows = document.getElementsByClassName('window');
+    const appWindows = document.getElementsByClassName('window');
     // if its being resized, dont do anything else like dragging and checking whether its going to be resized
     if (beingResized) {
         let elem = document.getElementById('resized');
         resize(elem, e.pageX, e.pageY, sizeX, sizeY, moveX, moveY);
     }
     else {
-        for (let window of windows) {
+        for (let appWindow of appWindows) {
             // check if a window is being dragged around and set the topleft corner respectively
-            if (window.classList.contains('dragged')) {
-                offsetX = offsetX ?? (e.pageX - window.offsetLeft);
-                offsetY = offsetY ?? (e.pageY - window.offsetTop);
-                window.style.left = `${e.pageX - offsetX}px`;
-                window.style.top = `${e.pageY - offsetY}px`;
+            if (appWindow.classList.contains('max'))
+                continue;
+            if (appWindow.classList.contains('dragged')) {
+                offsetX = offsetX ?? (e.pageX - appWindow.offsetLeft);
+                offsetY = offsetY ?? (e.pageY - appWindow.offsetTop);
+                appWindow.style.left = `${e.pageX - offsetX}px`;
+                appWindow.style.top = `${e.pageY - offsetY}px`;
             }
 
-            const distFromRightEdge = e.pageX - window.offsetWidth - window.offsetLeft;
-            const distFromLeftEdge = e.pageX - window.offsetLeft;
-            const distFromBottomEdge = e.pageY - window.offsetHeight - window.offsetTop;
-            const distFromTopEdge = e.pageY - window.offsetTop;
+            const distFromRightEdge = e.pageX - appWindow.offsetWidth - appWindow.offsetLeft;
+            const distFromLeftEdge = e.pageX - appWindow.offsetLeft;
+            const distFromBottomEdge = e.pageY - appWindow.offsetHeight - appWindow.offsetTop;
+            const distFromTopEdge = e.pageY - appWindow.offsetTop;
             let curs_type = '';
 
             // check if the cursor is in a 4px border rectangle of a window
@@ -136,7 +139,7 @@ function dragAndResize(e) {
                     moveX = true;
                 }
                 else { sizeX = false; moveX = false; }
-                window.id = 'resized'
+                appWindow.id = 'resized'
             }
             if (curs_type == '') {
                 let elem = document.getElementById('resized');
@@ -154,41 +157,82 @@ function dragAndResize(e) {
 
 // show the window
 function showWindow(id) { // too much extra code, will clean later
-    remove();
+    removeSelection();
     // Create a template app window
-    const windows = document.getElementsByClassName('window');
-    const window = document.createElement('div');
-    window.classList.add('window');
+    const appWindows = document.getElementsByClassName('window');
+    const appWindow = document.createElement('div');
+    appWindow.classList.add('window');
 
     // add a basic title bar
     const title_bar = document.createElement('div');
     title_bar.classList.add('title_bar');
-    title_bar.addEventListener('mousedown', (e) => window.classList.add('dragged'))
-    document.body.addEventListener('mouseup', (e) => { window.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
+    title_bar.addEventListener('mousedown', (e) => appWindow.classList.add('dragged'))
+    document.body.addEventListener('mousemove', (e) => {
+        if (appWindow.classList.contains('dragged'))
+            maxRestore(e, true);
+    })
+    document.body.addEventListener('mouseup', (e) => { appWindow.classList.remove('dragged'); offsetX = undefined; offsetY = undefined });
 
-    // add button for closing
+    // add button for closing, max size, hiding the window
     const close_button = document.createElement('div');
-    close_button.classList.add('close')
-    close_button.addEventListener('click', function (e) { window.remove(); removeApp(id) })
+    const max_button = document.createElement('div');
+    const hide_button = document.createElement('div');
 
-    // add the elements created to their respective containers
+    close_button.classList.add('title', 'close')
+    max_button.classList.add('title', 'max')
+    hide_button.classList.add('title', 'hide')
+
+    close_button.addEventListener('click', function (e) { appWindow.remove(); removeApp(id) })
+    let prevTop, prevLeft, prevHeight, prevWidth;
+    const maxRestore = function (e, drag) {
+        if (!appWindow.classList.contains('max') && !drag) {
+            appWindow.classList.add('max');
+            prevTop = appWindow.offsetTop;
+            prevLeft = appWindow.offsetLeft;
+            prevHeight = appWindow.offsetHeight;
+            prevWidth = appWindow.offsetWidth;
+            appWindow.style.top = '0';
+            appWindow.style.left = '0';
+            appWindow.style.height = '100%';
+            appWindow.style.width = '100%';
+        }
+        else if (appWindow.classList.contains('max')) {
+            if (drag) {
+                let offsetRatioX = (e.pageX - appWindow.offsetLeft) / appWindow.offsetWidth;
+                let offsetRatioY = (e.pageY - appWindow.offsetTop) / appWindow.offsetHeight;
+                appWindow.style.left = `${e.pageX - prevWidth * offsetRatioX}px`;
+                appWindow.style.top = `${e.pageY - prevHeight * offsetRatioY}px`;
+            }
+            else {
+                appWindow.style.left = `${prevLeft}px`
+                appWindow.style.top = `${prevTop}px`;
+            }
+            appWindow.style.width = `${prevWidth}px`;
+            appWindow.style.height = `${prevHeight}px`;
+            appWindow.classList.remove('max');
+        }
+    }
+    max_button.addEventListener('click', maxRestore)
+
+    title_bar.appendChild(hide_button);
+    title_bar.appendChild(max_button);
     title_bar.appendChild(close_button);
-    window.appendChild(title_bar);
-    window.appendChild(document.createTextNode('Hello'));
-
-    document.body.insertAdjacentElement('beforeend', window);
-    window.style.display = 'block';
+    // add the elements created to their respective containers
+    appWindow.appendChild(title_bar);
+    appWindow.appendChild(document.createTextNode('Hello'));
+    document.body.insertAdjacentElement('beforeend', appWindow);
+    appWindow.style.display = 'block';
 
     // (for now)place the new window (10,10) distance away from the last added window
-    if (windows.length > 1) {
+    if (appWindows.length > 1) {
         let last = document.body.childNodes[document.body.childNodes.length - 2];
-        window.style.top = `${last.offsetTop + 10}px`;
-        window.style.left = `${last.offsetLeft + 10}px`;
+        appWindow.style.top = `${last.offsetTop + 10}px`;
+        appWindow.style.left = `${last.offsetLeft + 10}px`;
     }
     else {
         // fix the window in place
-        window.style.top = `${window.offsetTop}px`;
-        window.style.left = `${window.offsetLeft}px`;
+        appWindow.style.top = `${appWindow.offsetTop}px`;
+        appWindow.style.left = `${appWindow.offsetLeft}px`;
     }
 }
 
@@ -205,7 +249,7 @@ function selection(id) {
         appPressed = true;
     }
 }
-function remove() {
+function removeSelection() {
     if (!appPressed) { // countering for the effect that pressing on the icon also triggers this function
         var x = document.getElementsByClassName('select');
         for (; x.length > 0;) {
