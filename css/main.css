@@ -172,7 +172,7 @@ body {
 
 .nav .icon:hover+.icon,
 .nav .icon:has(+.icon:hover),
-.nav .icon:hover+#apps .icon:hover:first-of-type,
+.nav .icon:hover+#apps .icon:first-of-type,
 .nav .icon:has(+#apps .icon:hover:first-of-type) {
     bottom: 30%;
     height: 110%;
