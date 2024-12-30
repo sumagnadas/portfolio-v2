@@ -26,7 +26,6 @@
 })()
 animations = {};
 function restore(e, id) {
-
     const appWindow = document.getElementById(`window-${id}`);
     if (appWindow.classList.contains('hidden')) {
         animations[id].play()
@@ -37,11 +36,18 @@ function restore(e, id) {
         appWindow.style.minWidth = '10px';
         appWindow.style.minHeight = '10px';
         appWindow.classList.remove('hidden');
-        appWindow.style.zIndex = 2;
-
+        setFocus(appWindow);
     }
 }
 
+function setFocus(appWindow, windows) {
+    const appWindows = windows ?? document.getElementsByClassName('window');
+    appWindow.style.zIndex = 2;
+    for (let app of appWindows) {
+        if (app != appWindow)
+            app.style.zIndex = 1;
+    }
+}
 // add app to the dock
 function addApp(id) {
     // the icon element going to be added to the dock
@@ -75,6 +81,7 @@ function removeApp(id) {
 let beingResized = false;
 // resize the window accordingly
 function resize(appWindow, posX, posY, sizeX, sizeY, moveX, moveY) {
+    setFocus(appWindow);
     if (sizeX && moveX) {
         // cursor on the left side
         // dont move the window by resizing or anything if its already at the min width
@@ -109,6 +116,7 @@ function dragAndResize(e) {
     // if its being resized, dont do anything else like dragging and checking whether its going to be resized
     if (beingResized) {
         let elem = document.getElementsByClassName('resized')[0];
+        setFocus(elem, appWindows);
         resize(elem, e.pageX, e.pageY, sizeX, sizeY, moveX, moveY);
     }
     else {
@@ -117,6 +125,7 @@ function dragAndResize(e) {
             if (appWindow.classList.contains('max'))
                 continue;
             if (appWindow.classList.contains('dragged')) {
+                setFocus(appWindow, appWindows);
                 offsetX = offsetX ?? (e.pageX - appWindow.offsetLeft);
                 offsetY = offsetY ?? (e.pageY - appWindow.offsetTop);
                 appWindow.style.left = `${e.pageX - offsetX}px`;
@@ -263,6 +272,12 @@ function showWindow(id) { // too much extra code, will clean later
     const appWindow = document.createElement('div');
     appWindow.classList.add('window');
     appWindow.id = `window-${id}`;
+    appWindow.style.zIndex = 2;
+    appWindow.addEventListener('click', (e) => {
+        if (appWindow.style.zIndex != 2) {
+            setFocus(appWindow, appWindows);
+        }
+    })
     // add a basic title bar
     const title_bar = document.createElement('div');
     title_bar.classList.add('title_bar');
@@ -300,6 +315,7 @@ function showWindow(id) { // too much extra code, will clean later
 
     // (for now)place the new window (10,10) distance away from the last added window
     if (appWindows.length > 1) {
+        setFocus(appWindow, appWindows);
         let last = document.body.childNodes[document.body.childNodes.length - 2];
         appWindow.style.top = `${last.offsetTop + 10}px`;
         appWindow.style.left = `${last.offsetLeft + 10}px`;

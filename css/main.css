@@ -3,7 +3,7 @@ html {
     overflow: hidden;
 }
 
-body:not(.modal, .nav) {
+body :not(.modal, .nav) {
     z-index: 0;
 }
 
@@ -66,8 +66,7 @@ body {
     background-color: grey;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    /* align-self: ; */
+    justify-content: flex-end
 }
 
 .title {
@@ -172,7 +171,9 @@ body {
 }
 
 .nav .icon:hover+.icon,
-.nav .icon:has(+.icon:hover) {
+.nav .icon:has(+.icon:hover),
+.nav .icon:hover+#apps .icon:hover:first-of-type,
+.nav .icon:has(+#apps .icon:hover:first-of-type) {
     bottom: 30%;
     height: 110%;
 }
