@@ -3,7 +3,7 @@ html {
     overflow: hidden;
 }
 
-body :not(.modal, .nav) {
+body :not(.window-cont, .nav) {
     z-index: 0;
 }
 
@@ -11,8 +11,25 @@ body :not(.modal, .nav) {
     z-index: 3;
 }
 
+.window-cont {
+    display: grid;
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    grid-template-columns: 10px auto 10px;
+    grid-template-rows: 10px auto 10px;
+}
+
 .window {
     z-index: 1;
+}
+
+.focused {
+    z-index: 2;
+}
+
+.focusIcon {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 body {
@@ -53,9 +70,6 @@ body {
     min-height: 10px;
     width: 200px;
     height: 100px;
-    position: absolute;
-    top: 20%;
-    left: 30%;
     background-color: rgba(200, 44, 100, 0.4);
     overflow: hidden;
 }
@@ -207,7 +221,9 @@ body {
 
     .nav .icon:hover,
     .nav .icon:hover+.icon,
-    .nav .icon:has(+.icon:hover) {
+    .nav .icon:has(+.icon:hover),
+    .nav .icon:hover+#apps .icon:first-of-type,
+    .nav .icon:has(+#apps .icon:hover:first-of-type) {
         background-color: rgba(255, 255, 255, 0);
         bottom: 0%;
         height: 100%;

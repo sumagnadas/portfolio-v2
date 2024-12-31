@@ -16,12 +16,13 @@
         let elem = document.getElementsByClassName('resized')[0];
         if (elem ?? false)
             elem.classList.remove('resized');
+        sizeX = false, sizeY = false, moveX = false, moveY = false;
     })// stop resizing if its in a border of a window
     document.body.addEventListener('click', removeSelection);
     for (let app of apps) {
         app.addEventListener('click', (e) => selection(app.id));
-        app.addEventListener('dblclick', (e) => showWindow(app.id));
         app.addEventListener('dblclick', (e) => addApp(app.id));
+        app.addEventListener('dblclick', (e) => showWindow(app.id));
     }
 })()
 animations = {};
@@ -30,23 +31,26 @@ function restore(e, id) {
     if (appWindow.classList.contains('hidden')) {
         animations[id].play()
         setTimeout(() => {
-            appWindow.style.display = 'block';
+            appWindow.parentElement.style.display = 'grid'
 
         }, 1);
         appWindow.style.minWidth = '10px';
         appWindow.style.minHeight = '10px';
         appWindow.classList.remove('hidden');
-        setFocus(appWindow);
     }
+    setFocus(appWindow);
 }
 
-function setFocus(appWindow, windows) {
-    const appWindows = windows ?? document.getElementsByClassName('window');
-    appWindow.style.zIndex = 2;
-    for (let app of appWindows) {
-        if (app != appWindow)
-            app.style.zIndex = 1;
-    }
+function setFocus(appWindow) {
+    const dockIcons = document.getElementsByClassName('focusIcon')
+    if (dockIcons.length == 1)
+        dockIcons[0].classList.remove('focusIcon');
+    const dockIcon = document.getElementById(appWindow.id.replace('window', 'app'));
+    dockIcon.classList.add('focusIcon');
+    let y = document.getElementsByClassName('focused');
+    if (y.length == 1)
+        y[0].classList.remove("focused");
+    appWindow.parentElement.classList.add('focused')
 }
 // add app to the dock
 function addApp(id) {
@@ -85,23 +89,25 @@ function resize(appWindow, posX, posY, sizeX, sizeY, moveX, moveY) {
     if (sizeX && moveX) {
         // cursor on the left side
         // dont move the window by resizing or anything if its already at the min width
-        if (posX <= appWindow.offsetLeft + appWindow.offsetWidth - 10) {
-            appWindow.style.width = `${appWindow.offsetWidth - (posX - appWindow.offsetLeft)}px`;
-            appWindow.style.left = `${posX}px`
+        // appWindow.offsetLeft + appWindow.offsetWidth - 10 = appWindwow.parentElement.offsetLeft+10 +appWindow.offsetWidth - 10
+        if (posX <= appWindow.parentElement.offsetLeft + appWindow.offsetWidth) {
+            appWindow.style.width = `${appWindow.offsetWidth - (posX - appWindow.parentElement.offsetLeft - 10)}px`;
+            appWindow.parentElement.style.left = `${posX - 10}px`
         }
     }
     else if (sizeX) // cursor on the right side
-        appWindow.style.width = `${appWindow.offsetWidth + (posX - appWindow.offsetLeft - appWindow.offsetWidth)}px`;
+        appWindow.style.width = `${appWindow.offsetWidth + (posX - appWindow.parentElement.offsetLeft - 10 - appWindow.offsetWidth)}px`;
     if (sizeY && moveY) {
         // cursor on the top side
         // dont move the window by resizing or anything if its already at the min height
-        if (posY <= appWindow.offsetTop + appWindow.offsetHeight - 10) {
-            appWindow.style.height = `${appWindow.offsetHeight - (posY - appWindow.offsetTop)}px`;
-            appWindow.style.top = `${posY}px`
+        // appWindow.offsetTop + appWindow.offsetHeight - 10 = appWindwow.parentElement.offsetTop+10 +appWindow.offsetHeight - 10
+        if (posY <= appWindow.parentElement.offsetTop + appWindow.offsetHeight) {
+            appWindow.style.height = `${appWindow.offsetHeight - (posY - (appWindow.parentElement.offsetTop + 10))}px`;
+            appWindow.parentElement.style.top = `${posY - 10}px`
         }
     }
     else if (sizeY) // cursor on the bottom side
-        appWindow.style.height = `${appWindow.offsetHeight + (posY - appWindow.offsetTop - appWindow.offsetHeight)}px`;
+        appWindow.style.height = `${appWindow.offsetHeight + (posY - (appWindow.parentElement.offsetTop + 10) - appWindow.offsetHeight)}px`;
 }
 // states whether only the size is increasing in X,Y axes resp (sizeX, sizeY)
 // or is the top left corner (moveX, moveY) also going to be moved as if the window is being resized
@@ -116,7 +122,7 @@ function dragAndResize(e) {
     // if its being resized, dont do anything else like dragging and checking whether its going to be resized
     if (beingResized) {
         let elem = document.getElementsByClassName('resized')[0];
-        setFocus(elem, appWindows);
+        // setFocus(elem, appWindows);
         resize(elem, e.pageX, e.pageY, sizeX, sizeY, moveX, moveY);
     }
     else {
@@ -125,59 +131,13 @@ function dragAndResize(e) {
             if (appWindow.classList.contains('max'))
                 continue;
             if (appWindow.classList.contains('dragged')) {
-                setFocus(appWindow, appWindows);
-                offsetX = offsetX ?? (e.pageX - appWindow.offsetLeft);
-                offsetY = offsetY ?? (e.pageY - appWindow.offsetTop);
-                appWindow.style.left = `${e.pageX - offsetX}px`;
-                appWindow.style.top = `${e.pageY - offsetY}px`;
-            }
-            else {
-                const distFromRightEdge = e.pageX - appWindow.offsetWidth - appWindow.offsetLeft;
-                const distFromLeftEdge = e.pageX - appWindow.offsetLeft;
-                const distFromBottomEdge = e.pageY - appWindow.offsetHeight - appWindow.offsetTop;
-                const distFromTopEdge = e.pageY - appWindow.offsetTop;
-                let curs_type = '';
+                setFocus(appWindow);
+                offsetX = offsetX ?? (e.pageX - appWindow.parentElement.offsetLeft);
+                offsetY = offsetY ?? (e.pageY - appWindow.parentElement.offsetTop);
 
-                // check if the cursor is in a 4px border rectangle of a window
-                if (distFromBottomEdge <= 4 && distFromTopEdge >= -4 && distFromRightEdge <= 4 && distFromLeftEdge >= -4) {
-                    if (distFromBottomEdge <= 4 && distFromBottomEdge >= -4) {
-                        // currently on the bottom side
-                        curs_type += 's';
-                        sizeY = true;
-                    }
-                    else if (distFromTopEdge <= 4 && distFromTopEdge >= -4) {
-                        // currently on the top side
-                        curs_type += 'n';
-                        sizeY = true;
-                        moveY = true;
-                    }
-                    else {
-                        sizeY = false; moveY = false;
-                    }
-                    if (distFromRightEdge <= 4 && distFromRightEdge >= 0) {
-                        // currently on the right side
-                        curs_type += 'e';
-                        sizeX = true;
-                    }
-                    else if (distFromLeftEdge >= -4 && distFromLeftEdge <= 0) {
-                        // currently on the left side
-                        curs_type += 'w';
-                        sizeX = true;
-                        moveX = true;
-                    }
-                    else { sizeX = false; moveX = false; }
-                    appWindow.classList.add('resized')
-                }
-                if (curs_type == '') {
-                    let elem = document.getElementsByClassName('resized')[0];
-                    document.body.style.cursor = 'auto';
-                    if (elem ?? false)
-                        elem.classList.remove('resized');
-                }
-                else {
-                    document.body.style.cursor = curs_type + '-resize';
-                    break;
-                }
+                // moving the element now is all on the container
+                appWindow.parentElement.style.left = `${e.pageX - offsetX}px`;
+                appWindow.parentElement.style.top = `${e.pageY - offsetY}px`;
             }
         }
     }
@@ -188,31 +148,50 @@ function maxRestore(e, id, drag) {
     const appWindow = document.getElementById(`window-${id}`);
     if (!appWindow.classList.contains('max') && !drag) {
         // save eveything of the previous state to varbiables
-        prevTop = appWindow.offsetTop;
-        prevLeft = appWindow.offsetLeft;
+        prevTop = appWindow.parentElement.offsetTop;
+        prevLeft = appWindow.parentElement.offsetLeft;
         prevHeight = appWindow.offsetHeight;
         prevWidth = appWindow.offsetWidth;
 
         // set everything to max and also
         appWindow.classList.add('max');
-        appWindow.style.top = '0';
-        appWindow.style.left = '0';
+
+        // moving the element now is all on the container
+        appWindow.parentElement.style.top = '0';
+        appWindow.parentElement.style.left = '0';
+        // the container element to full size
+        appWindow.parentElement.style.height = '100%';
+        appWindow.parentElement.style.width = '100%';
+
+        // grid doesn't work well with elements being display: none
+        appWindow.parentElement.style.display = 'block';
+
+        // set the main window to max
         appWindow.style.height = '100%';
         appWindow.style.width = '100%';
+
+        // remove the border pieces
+        for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'none'; }
     }
     else if (appWindow.classList.contains('max')) {
         if (drag) {
             // the ratio of the cursor position in the rectangle of status bar is used for OS-like feeling
-            let offsetRatioX = (e.pageX - appWindow.offsetLeft) / appWindow.offsetWidth;
-            let offsetRatioY = (e.pageY - appWindow.offsetTop) / appWindow.offsetHeight;
+            let offsetRatioX = e.pageX / appWindow.offsetWidth;
+            let offsetRatioY = e.pageY / appWindow.offsetHeight;
 
-            appWindow.style.left = `${e.pageX - prevWidth * offsetRatioX}px`;
-            appWindow.style.top = `${e.pageY - prevHeight * offsetRatioY}px`;
+            // moving the element now is all on the container
+            appWindow.parentElement.style.left = `${e.pageX - prevWidth * offsetRatioX - 10}px`;
+            appWindow.parentElement.style.top = `${e.pageY - prevHeight * offsetRatioY - 10}px`;
         }
         else {
-            appWindow.style.left = `${prevLeft}px`
-            appWindow.style.top = `${prevTop}px`;
+            appWindow.parentElement.style.left = `${prevLeft}px`
+            appWindow.parentElement.style.top = `${prevTop}px`;
         }
+        // set everything back to normal
+        appWindow.parentElement.style.display = 'grid';
+        for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'block'; }
+        appWindow.parentElement.style.removeProperty('height')
+        appWindow.parentElement.style.removeProperty('width');
         appWindow.style.width = `${prevWidth}px`;
         appWindow.style.height = `${prevHeight}px`;
         appWindow.classList.remove('max');
@@ -230,16 +209,12 @@ function hide(e, id) {
 
     // add animation for the hiding
     let finalState = {
-        left: `${icon.offsetLeft + icon.offsetWidth / 2}px`,
-        top: `${document.body.offsetHeight - icon.offsetHeight / 2}px`,
         height: '0',
         width: '0',
         offset: 1,
     }
     let initialState =
     {
-        left: `${appWindow.offsetLeft}px`,
-        top: `${appWindow.offsetTop}px`,
         height: `${appWindow.offsetHeight}px`,
         width: `${appWindow.offsetWidth}px`,
         offset: 0,
@@ -257,25 +232,56 @@ function hide(e, id) {
         }
     )
     // just before the window goes to the dock, get it out from display
-    setTimeout(() => appWindow.style.display = 'none', 199);
+    setTimeout(() => appWindow.parentElement.style.display = 'none', 199);
 
     // pause it midway as if its hidden
     // playing it will return it to its location
     setTimeout(() => animations[id].pause(), 200);
 }
 
+const cursCols = ['w', '', 'e'];
+const cursRows = ['n', '', 's'];
 // show the window
 function showWindow(id) { // too much extra code, will clean later
     removeSelection();
     // Create a template app window
-    const appWindows = document.getElementsByClassName('window');
+    const appWindows = document.getElementsByClassName('window-cont');
+    const appWindowCont = document.createElement('div');
+    appWindowCont.classList.add('window-cont');
     const appWindow = document.createElement('div');
     appWindow.classList.add('window');
+    for (let y = 0; y < 3; y++) {
+        let curs_type = '';
+        for (let x = 0; x < 3; x++) {
+            if (!(y == 1 && x == 1)) {
+                const borderPiece = document.createElement('div');
+                curs_type = cursRows[y] + cursCols[x];
+                borderPiece.style.cursor = curs_type + '-resize';
+                appWindowCont.appendChild(borderPiece)
+                borderPiece.addEventListener('mouseenter', (e) => appWindow.classList.add('resized'));
+                borderPiece.addEventListener('mouseout', (e) => { if (!beingResized) appWindow.classList.remove('resized'); });
+                borderPiece.addEventListener('mousedown', (e) => {
+                    if (x != 1)
+                        sizeX = true;
+                    if (x == 0)
+                        moveX = true;
+                    if (y != 1)
+                        sizeY = true;
+                    if (y == 0)
+                        moveY = true;
+                    document.body.style.cursor = borderPiece.style.cursor;
+                })
+
+            }
+            else
+                appWindowCont.appendChild(appWindow);
+        }
+    }
     appWindow.id = `window-${id}`;
-    appWindow.style.zIndex = 2;
+    setFocus(appWindow);
     appWindow.addEventListener('click', (e) => {
-        if (appWindow.style.zIndex != 2) {
-            setFocus(appWindow, appWindows);
+        if (appWindowCont.style.zIndex != 2) {
+            setFocus(appWindow);
         }
     })
     // add a basic title bar
@@ -299,7 +305,7 @@ function showWindow(id) { // too much extra code, will clean later
     hide_button.classList.add('title', 'hide')
 
     // add the click functions
-    close_button.addEventListener('click', function (e) { appWindow.remove(); removeApp(id) })
+    close_button.addEventListener('click', function (e) { appWindowCont.remove(); removeApp(id) })
     max_button.addEventListener('click', (e) => maxRestore(e, id, false))
     hide_button.addEventListener('click', (e) => hide(e, id));
 
@@ -311,19 +317,20 @@ function showWindow(id) { // too much extra code, will clean later
     // add the elements created to their respective containers
     appWindow.appendChild(title_bar);
     appWindow.appendChild(document.createTextNode('Hello'));
-    document.body.insertAdjacentElement('beforeend', appWindow);
+    document.body.insertAdjacentElement('beforeend', appWindowCont);
 
     // (for now)place the new window (10,10) distance away from the last added window
     if (appWindows.length > 1) {
-        setFocus(appWindow, appWindows);
-        let last = document.body.childNodes[document.body.childNodes.length - 2];
-        appWindow.style.top = `${last.offsetTop + 10}px`;
-        appWindow.style.left = `${last.offsetLeft + 10}px`;
+        setFocus(appWindow);
+        const windows = document.getElementsByClassName('window');
+        const last = windows[windows.length - 2];
+        appWindowCont.style.top = `${Number.parseInt(last.parentElement.style.top) + 10}px`;
+        appWindowCont.style.left = `${Number.parseInt(last.parentElement.style.left) + 10}px`;
     }
     else {
         // fix the window in place
-        appWindow.style.top = `${appWindow.offsetTop}px`;
-        appWindow.style.left = `${appWindow.offsetLeft}px`;
+        appWindowCont.style.top = `${appWindowCont.offsetTop}px`;
+        appWindowCont.style.left = `${appWindowCont.offsetLeft}px`;
     }
 }
 
