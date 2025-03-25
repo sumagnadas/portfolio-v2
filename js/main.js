@@ -25,7 +25,7 @@
         app.addEventListener('dblclick', (e) => showWindow(app.id));
     }
 })()
-animations = {};
+let animations = {};
 function restore(e, id) {
     const appWindow = document.getElementById(`window-${id}`);
     if (appWindow.classList.contains('hidden')) {
@@ -347,13 +347,9 @@ function selection(id) {
         appPressed = true;
     }
 }
-function removeSelection() {
-    if (!appPressed) { // countering for the effect that pressing on the icon also triggers this function
+function removeSelection() {// countering for the effect that pressing on the icon also triggers this function
         var x = document.getElementsByClassName('select');
         for (; x.length > 0;) {
             x[0].classList.remove("select");
         }
-    }
-    else
-        appPressed = false;
 }
