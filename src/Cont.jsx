@@ -14,6 +14,7 @@ function Cont({
   isFocus,
   setFocusApp,
   animations,
+  beingDragged,
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
   //   isWindow && setFocus("window-" + app.id + "-cont");
@@ -45,6 +46,7 @@ function Cont({
           isFocus={isFocus}
           setFocusApp={setFocusApp}
           animations={animations}
+          beingDragged={beingDragged}
         ></Window>
       )}
     </>

@@ -1,3 +1,5 @@
+import { createContext } from "react";
+
 export function selection(e, id) {
     e.stopPropagation();
     if (id) {
@@ -86,5 +88,61 @@ export function restore(animations, id) {
         appWindow.style.minWidth = '10px';
         appWindow.style.minHeight = '10px';
         appWindow.classList.remove('hidden');
+    }
+}
+export const WindowContext = createContext()
+export function maxRestore(e, drag,id, prevState, setPrevState) {
+    const appWindow = document.getElementById(`window-${id}`);
+    if (!appWindow.classList.contains('max') && !drag) {
+        // save eveything of the previous state to varbiables
+        setPrevState({
+        top: appWindow.parentElement.offsetTop,
+        left: appWindow.parentElement.offsetLeft,
+        height: appWindow.offsetHeight,
+        width: appWindow.offsetWidth,
+        })
+
+        // set everything to max and also
+        appWindow.classList.add('max');
+
+        // moving the element now is all on the container
+        appWindow.parentElement.style.top = '0';
+        appWindow.parentElement.style.left = '0';
+        // the container element to full size
+        appWindow.parentElement.style.height = '100%';
+        appWindow.parentElement.style.width = '100%';
+
+        // grid doesn't work well with elements being display: none
+        appWindow.parentElement.style.display = 'block';
+
+        // set the main window to max
+        appWindow.style.height = '100%';
+        appWindow.style.width = '100%';
+
+        // remove the border pieces
+        for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'none'; }
+    }
+    else if (appWindow.classList.contains('max')) {
+        if (drag) {
+            // the ratio of the cursor position in the rectangle of status bar is used for OS-like feeling
+            let offsetRatioX = e.pageX / appWindow.offsetWidth;
+            let offsetRatioY = e.pageY / appWindow.offsetHeight;
+
+            // moving the element now is all on the container
+            appWindow.parentElement.style.left = `${e.pageX - prevState.width * offsetRatioX - 10}px`;
+            appWindow.parentElement.style.top = `${e.pageY - prevState.height * offsetRatioY - 10}px`;
+        }
+        else {
+            appWindow.parentElement.style.left = `${prevState.left}px`
+            appWindow.parentElement.style.top = `${prevState.top}px`;
+        }
+        // set everything back to normal
+        appWindow.parentElement.style.display = 'grid';
+        for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'block'; }
+        appWindow.parentElement.style.removeProperty('height')
+        appWindow.parentElement.style.removeProperty('width');
+        appWindow.style.width = `${prevState.width}px`;
+        appWindow.style.height = `${prevState.height}px`;
+        appWindow.classList.remove('max');
     }
 }

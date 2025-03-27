@@ -59,6 +59,7 @@ function App() {
   }; // added to body as it can be dragged and resized anywhere
   document.body.onmouseup = () => {
     setResized(false);
+    setDragged(false);
     updateResizeProps({
       size: {
         x: false,
@@ -69,6 +70,10 @@ function App() {
         y: false,
       },
       id: "",
+    });
+    updateDragProps((draft) => {
+      draft.offset.x = null;
+      draft.offset.y = null;
     });
   };
   if (!beingResized) {
@@ -88,13 +93,18 @@ function App() {
       isFocus={focusApp === app.id}
       setFocusApp={setFocusApp}
       animations={animations}
+      beingDragged={beingDragged}
     />
   ));
-  console.log(focusApp);
   return (
     <>
       {deskIcons}
-      <NavBar openApps={openApps} focusApp={focusApp} animations={animations} />
+      <NavBar
+        openApps={openApps}
+        focusApp={focusApp}
+        animations={animations}
+        setFocusApp={setFocusApp}
+      />
     </>
   );
 }

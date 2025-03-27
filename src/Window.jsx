@@ -1,6 +1,7 @@
 // import { useState } from "react";
 
-import { removeSelection, hide } from "./helpers";
+import { useImmer } from "use-immer";
+import { removeSelection, hide, maxRestore } from "./helpers";
 
 const cursCols = ["w", "", "e"];
 const cursRows = ["n", "", "s"];
@@ -64,6 +65,9 @@ function TitleBar({
   setDragged,
   updateDragProps,
   animations,
+  prevState,
+  setPrevState,
+  beingDragged,
 }) {
   return (
     <div
@@ -73,6 +77,10 @@ function TitleBar({
         updateDragProps((draft) => {
           draft.id = id;
         });
+        // e.stopPropagation();
+      }}
+      onMouseMove={(e) => {
+        if (beingDragged) maxRestore(e, true, id, prevState, setPrevState);
       }}
       onMouseUp={() => {
         setDragged(false);
@@ -82,7 +90,15 @@ function TitleBar({
       }}
     >
       <div className="title hide" onClick={() => hide(animations, id)}></div>
-      <div className="title max"></div>
+      <div
+        className="title max"
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+        onMouseUp={(e) => {
+          maxRestore(e, false, id, prevState, setPrevState);
+        }}
+      ></div>
       <div
         className="title close"
         onClick={() => {
@@ -105,9 +121,16 @@ function Window({
   isFocus,
   setFocusApp,
   animations,
+  beingDragged,
 }) {
   let app_id = "window-" + app.id;
   removeSelection();
+  const [prevState, setPrevState] = useImmer({
+    top: null,
+    left: null,
+    height: null,
+    width: null,
+  });
   return (
     <div
       className={"window-cont" + (isFocus ? " focused" : "")}
@@ -129,6 +152,9 @@ function Window({
             setDragged={setDragged}
             updateDragProps={updateDragProps}
             animations={animations}
+            prevState={prevState}
+            setPrevState={setPrevState}
+            beingDragged={beingDragged}
           />
           Hello
         </div>
