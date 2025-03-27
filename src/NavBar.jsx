@@ -30,16 +30,16 @@ function NavBar({ openApps, focusApp, animations, setFocusApp }) {
     <div className="nav">
       <div className="cont">
         <div className="icon">
-          <img src="/assets/test.png" alt="text" />
+          <img src="assets/test.png" alt="text" />
         </div>
         <div className="icon">
-          <img src="/assets/test.png" alt="text" />
+          <img src="assets/test.png" alt="text" />
         </div>
         <div className="icon">
-          <img src="/assets/test.png" alt="text" />
+          <img src="assets/test.png" alt="text" />
         </div>
         <div className="icon">
-          <img src="/assets/test.png" alt="text" />
+          <img src="assets/test.png" alt="text" />
         </div>
         <DockApps
           openApps={openApps}

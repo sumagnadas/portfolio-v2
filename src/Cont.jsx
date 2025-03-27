@@ -17,7 +17,6 @@ function Cont({
   beingDragged,
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
-  //   isWindow && setFocus("window-" + app.id + "-cont");
   return (
     <>
       <div
