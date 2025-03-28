@@ -7,6 +7,14 @@ body :not(.window-cont, .nav) {
     z-index: 0;
 }
 
+#apps
+{
+    border-left: 0px solid white;
+}
+.hidden
+{
+    transition: all 0.2s;
+}
 .nav {
     z-index: 3;
 }
@@ -18,9 +26,6 @@ body :not(.window-cont, .nav) {
     left: 30%;
     grid-template-columns: 10px auto 10px;
     grid-template-rows: 10px auto 10px;
-}
-
-.window {
     z-index: 1;
 }
 
