@@ -6,13 +6,13 @@ import { useImmer } from "use-immer";
 import { resize } from "./helpers";
 
 const apps = [
-  { id: "file", name: "hello", img: "/assets/test.png" },
+  { id: "file", name: "hello", img: "assets/test.png" },
   {
     id: "TING",
     name: "There Is NO Game Wrong Dimension",
-    img: "/assets/test.png",
+    img: "assets/test.png",
   },
-  { id: "random", name: "random app", img: "/assets/test.png" },
+  { id: "random", name: "random app", img: "assets/test.png" },
 ];
 let animations = [];
 function App() {

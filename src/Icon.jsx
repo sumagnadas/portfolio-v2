@@ -5,7 +5,7 @@ export function Icon({ app, onclick, id, isFocus }) {
       onClick={onclick}
       id={id}
     >
-      <img src={"/portfolio-v2" + app.img} alt="text" />
+      <img src={app.img} alt="text" />
     </div>
   );
 }
