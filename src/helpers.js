@@ -78,6 +78,7 @@ export function hide(animations, id) {
 export function restore(animations, id) {
     const appWindow = document.getElementById(`window-${id}`);
     if (appWindow.classList.contains('hidden')) {
+        // animations[id].play() // for later animation purposes
         setTimeout(() => {
             appWindow.parentElement.style.display = 'grid'
 
