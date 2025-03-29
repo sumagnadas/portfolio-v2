@@ -28,10 +28,10 @@ function App() {
       x: false,
       y: false,
     },
-    id: "",
+    window: null,
   });
   const [dragProps, updateDragProps] = useImmer({
-    id: "",
+    window: null,
     offset: {
       x: undefined,
       y: undefined,
@@ -43,7 +43,7 @@ function App() {
       // setFocus(elem, appWindows);
       resize(e.pageX, e.pageY, resizeProps);
     } else if (beingDragged) {
-      const appWindow = document.getElementById(`window-${dragProps.id}-cont`);
+      const appWindow = dragProps.window.current.parentElement;
       let offsetX = dragProps.offset.x ?? e.pageX - appWindow.offsetLeft;
       let offsetY = dragProps.offset.y ?? e.pageY - appWindow.offsetTop;
 

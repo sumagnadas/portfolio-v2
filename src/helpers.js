@@ -1,15 +1,13 @@
 import { createContext } from "react";
 
-export function selection(e, id) {
+export function selection(e, contRef) {
     e.stopPropagation();
-    if (id) {
-      let x = document.getElementById(id);
-      let y = document.getElementsByClassName("select");
+    let x = contRef.current;
+    let y = document.getElementsByClassName("select");
 
-      if (y.length == 1) y[0].classList.remove("select");
+    if (y.length == 1) y[0].classList.remove("select");
 
-      x.classList.add("select");
-    }
+    x.classList.add("select");
 }
 export function removeSelection() {// countering for the effect that pressing on the icon also triggers this function
     var x = document.getElementsByClassName('select');
@@ -19,7 +17,7 @@ export function removeSelection() {// countering for the effect that pressing on
 }
 // resize the window accordingly
 export function resize(posX, posY, resizeProps) {
-    const appWindow = document.getElementById(resizeProps.id)
+    const appWindow = resizeProps.window.current;
     if (resizeProps.size.x && resizeProps.move.x) {
         // cursor on the left side
         // dont move the window by resizing or anything if its already at the min width
@@ -44,8 +42,8 @@ export function resize(posX, posY, resizeProps) {
         appWindow.style.height = `${appWindow.offsetHeight + (posY - (appWindow.parentElement.offsetTop + 10) - appWindow.offsetHeight)}px`;
 }
 // hide the window into the dock
-export function hide(animations, id) {
-    const appWindow = document.getElementById(`window-${id}`);
+export function hide(animations, winRef) {
+    const appWindow = winRef.current;
     appWindow.classList.add('hidden');
 
     appWindow.style.minWidth = '0';
@@ -64,9 +62,8 @@ export function hide(animations, id) {
         height: `${appWindow.offsetHeight}px`,
         width: `${appWindow.offsetWidth}px`,
         offset: 0,
-
     }
-    animations[id] = {height: `${appWindow.offsetHeight}px`,
+    animations[appWindow.id] = {height: `${appWindow.offsetHeight}px`,
     width: `${appWindow.offsetWidth}px`,}
     // just before the window goes to the dock, get it out from display
     setTimeout(() => appWindow.parentElement.style.display = 'none', 199);
@@ -76,15 +73,16 @@ export function hide(animations, id) {
     // setTimeout(() => animations[id].pause(), 200);
 }
 export function restore(animations, id) {
-    const appWindow = document.getElementById(`window-${id}`);
+    let app_id = `window-${id}`;
+    const appWindow = document.getElementById(app_id);
     if (appWindow.classList.contains('hidden')) {
         // animations[id].play() // for later animation purposes
         setTimeout(() => {
             appWindow.parentElement.style.display = 'grid'
 
         }, 1);
-        appWindow.style.height =animations[id].height;
-        appWindow.style.width= animations[id].width;
+        appWindow.style.height =animations[app_id].height;
+        appWindow.style.width= animations[app_id].width;
         
         appWindow.style.minWidth = '10px';
         appWindow.style.minHeight = '10px';
@@ -92,8 +90,8 @@ export function restore(animations, id) {
     }
 }
 export const WindowContext = createContext()
-export function maxRestore(e, drag,id, prevState, setPrevState) {
-    const appWindow = document.getElementById(`window-${id}`);
+export function maxRestore(e, drag,winRef, prevState, setPrevState) {
+    const appWindow = winRef.current;
     if (!appWindow.classList.contains('max') && !drag) {
         // save eveything of the previous state to varbiables
         setPrevState({

@@ -1,4 +1,5 @@
 import { useImmer } from "use-immer";
+import { useRef } from "react";
 import { selection } from "./helpers";
 import Window from "./Window";
 import { Icon } from "./Icon";
@@ -17,12 +18,14 @@ function Cont({
   beingDragged,
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
+  let contRef = useRef(null);
   return (
     <>
       <div
         className="app"
         id={app.id}
-        onClick={(e) => selection(e, app.id)}
+        ref={contRef}
+        onClick={(e) => selection(e, contRef)}
         onDoubleClick={() => {
           setIsWindow(true);
           updateOpenApps([...openApps, app]);

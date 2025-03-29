@@ -1,11 +1,18 @@
-// import { useState } from "react";
+import { useRef } from "react";
 
 import { useImmer } from "use-immer";
 import { removeSelection, hide, maxRestore } from "./helpers";
 
 const cursCols = ["w", "", "e"];
 const cursRows = ["n", "", "s"];
-function Border({ id, beingResized, updateResizeProps, children, setResized }) {
+function Border({
+  id,
+  beingResized,
+  updateResizeProps,
+  children,
+  setResized,
+  winRef,
+}) {
   let elems = [];
   let curs_type = "";
   for (let y = 0; y < 3; y++) {
@@ -26,7 +33,7 @@ function Border({ id, beingResized, updateResizeProps, children, setResized }) {
             }}
             onMouseDown={() => {
               updateResizeProps((draft) => {
-                draft.id = id;
+                draft.window = winRef;
               });
               if (x != 1)
                 updateResizeProps((draft) => {
@@ -68,6 +75,7 @@ function TitleBar({
   prevState,
   setPrevState,
   beingDragged,
+  winRef,
 }) {
   return (
     <div
@@ -75,12 +83,13 @@ function TitleBar({
       onMouseDown={() => {
         setDragged(true);
         updateDragProps((draft) => {
-          draft.id = id;
+          draft.window = winRef;
         });
+
         // e.stopPropagation();
       }}
       onMouseMove={(e) => {
-        if (beingDragged) maxRestore(e, true, id, prevState, setPrevState);
+        if (beingDragged) maxRestore(e, true, winRef, prevState, setPrevState);
       }}
       onMouseUp={() => {
         setDragged(false);
@@ -89,14 +98,17 @@ function TitleBar({
         });
       }}
     >
-      <div className="title hide" onClick={() => hide(animations, id)}></div>
+      <div
+        className="title hide"
+        onClick={() => hide(animations, winRef)}
+      ></div>
       <div
         className="title max"
         onMouseDown={(e) => {
           e.stopPropagation();
         }}
         onMouseUp={(e) => {
-          maxRestore(e, false, id, prevState, setPrevState);
+          maxRestore(e, false, winRef, prevState, setPrevState);
         }}
       ></div>
       <div
@@ -124,6 +136,7 @@ function Window({
   beingDragged,
 }) {
   let app_id = "window-" + app.id;
+  let winRef = useRef(null);
   removeSelection();
   const [prevState, setPrevState] = useImmer({
     top: null,
@@ -143,8 +156,9 @@ function Window({
         beingResized={beingResized}
         updateResizeProps={updateResizeProps}
         setResized={setResized}
+        winRef={winRef}
       >
-        <div className="window" id={app_id}>
+        <div className="window" id={app_id} ref={winRef}>
           <TitleBar
             id={app.id}
             setIsShown={setIsWindow}
@@ -155,6 +169,7 @@ function Window({
             prevState={prevState}
             setPrevState={setPrevState}
             beingDragged={beingDragged}
+            winRef={winRef}
           />
           Hello
         </div>
