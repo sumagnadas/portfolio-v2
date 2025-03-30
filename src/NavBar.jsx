@@ -1,5 +1,5 @@
 import { Icon } from "./Icon";
-import { restore } from "./helpers";
+import { restore, winRefs } from "./helpers";
 
 function DockApps({ openApps, focusApp, animations, setFocusApp }) {
   const appIcons = openApps.map((app) => (
@@ -7,7 +7,7 @@ function DockApps({ openApps, focusApp, animations, setFocusApp }) {
       key={app.id}
       app={app}
       onclick={() => {
-        restore(animations, app);
+        restore(animations, app.id, winRefs[app.id]);
         setFocusApp(app.id);
       }}
       isFocus={focusApp === app.id}

@@ -15,10 +15,6 @@ const apps = [
   },
   { id: "random", name: "random app", img: "assets/test.png" },
 ];
-
-apps.forEach((app) => {
-  app.winRef = null;
-});
 let animations = [];
 function App() {
   const leftEyeRef = useRef(null);

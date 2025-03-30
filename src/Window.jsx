@@ -1,18 +1,10 @@
 import { useRef } from "react";
 
 import { useImmer } from "use-immer";
-import { removeSelection, hide, maxRestore } from "./helpers";
-
+import { removeSelection, hide, maxRestore, winRefs } from "./helpers";
 const cursCols = ["w", "", "e"];
 const cursRows = ["n", "", "s"];
-function Border({
-  app,
-  id,
-  beingResized,
-  updateResizeProps,
-  children,
-  setResized,
-}) {
+function Border({ app, id, updateResizeProps, children, setResized }) {
   let elems = [];
   let curs_type = "";
   for (let y = 0; y < 3; y++) {
@@ -22,15 +14,9 @@ function Border({
         elems.push(
           <div
             style={{ cursor: curs_type }}
-            onMouseEnter={() => {
-              app.winRef.classList.add("resized");
-            }}
-            onMouseOut={() => {
-              if (!beingResized) app.winRef.classList.remove("resized");
-            }}
             onMouseDown={() => {
               updateResizeProps((draft) => {
-                draft.window = app.winRef;
+                draft.window = winRefs[app.id];
               });
               if (x != 1)
                 updateResizeProps((draft) => {
@@ -80,14 +66,12 @@ function TitleBar({
       onMouseDown={() => {
         setDragged(true);
         updateDragProps((draft) => {
-          draft.window = app.winRef;
+          draft.window = winRefs[app.id];
         });
-
-        // e.stopPropagation();
       }}
       onMouseMove={(e) => {
         if (beingDragged)
-          maxRestore(e, true, app.winRef, prevState, setPrevState);
+          maxRestore(e, true, winRefs[app.id], prevState, setPrevState);
       }}
       onMouseUp={() => {
         setDragged(false);
@@ -98,7 +82,7 @@ function TitleBar({
     >
       <div
         className="title hide"
-        onClick={() => hide(animations, app.winRef)}
+        onClick={() => hide(animations, winRefs[app.id])}
       ></div>
       <div
         className="title max"
@@ -106,7 +90,7 @@ function TitleBar({
           e.stopPropagation();
         }}
         onMouseUp={(e) => {
-          maxRestore(e, false, app.winRef, prevState, setPrevState);
+          maxRestore(e, false, winRefs[app.id], prevState, setPrevState);
         }}
       ></div>
       <div
@@ -132,7 +116,6 @@ function Window({
   setFocusApp,
   animations,
   beingDragged,
-  refCallback,
 }) {
   let app_id = "window-" + app.id;
   removeSelection();
@@ -156,7 +139,16 @@ function Window({
         updateResizeProps={updateResizeProps}
         setResized={setResized}
       >
-        <div className="window" id={app_id} ref={refCallback}>
+        <div
+          className="window"
+          id={app_id}
+          ref={(node) => {
+            winRefs[app.id] = node;
+            return () => {
+              winRefs[app.id] = null;
+            };
+          }}
+        >
           <TitleBar
             app={app}
             id={app.id}

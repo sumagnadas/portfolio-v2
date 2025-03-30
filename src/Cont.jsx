@@ -19,10 +19,6 @@ function Cont({
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
   let contRef = useRef();
-  const refCallback = (node) => {
-    app.winRef = node;
-    return () => {};
-  };
   return (
     <>
       <div
@@ -55,7 +51,6 @@ function Cont({
           setFocusApp={setFocusApp}
           animations={animations}
           beingDragged={beingDragged}
-          refCallback={refCallback}
         ></Window>
       )}
     </>

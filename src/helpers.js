@@ -72,9 +72,8 @@ export function hide(animations, winRef) {
     // playing it will return it to its location
     // setTimeout(() => animations[id].pause(), 200);
 }
-export function restore(animations, app) {
-    let app_id = `window-${app.id}`;
-    const appWindow = app.winRef;
+export function restore(animations, id, appWindow) {
+    let app_id = `window-${id}`;
     if (appWindow.classList.contains('hidden')) {
         // animations[id].play() // for later animation purposes
         appWindow.parentElement.style.display = 'grid'
@@ -146,3 +145,4 @@ export function maxRestore(e, drag,winRef, prevState, setPrevState) {
         appWindow.classList.remove('max');
     }
 }
+export let winRefs = [];
