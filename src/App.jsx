@@ -4,6 +4,7 @@ import Cont from "./Cont";
 import NavBar from "./NavBar";
 import { useImmer } from "use-immer";
 import { resize } from "./helpers";
+import { useRef } from "react";
 
 const apps = [
   { id: "file", name: "hello", img: "assets/test.png" },
@@ -16,6 +17,8 @@ const apps = [
 ];
 let animations = [];
 function App() {
+  const leftEyeRef = useRef(null);
+  const rightEyeRef = useRef(null);
   const [beingResized, setResized] = useImmer(false);
   const [beingDragged, setDragged] = useImmer(false);
   const [openApps, updateOpenApps] = useImmer([]);
@@ -39,6 +42,32 @@ function App() {
   });
   const [focusApp, setFocusApp] = useImmer("");
   document.body.onmousemove = (e) => {
+    const leftStyle = leftEyeRef.current.style;
+    const rightStyle = rightEyeRef.current.style;
+
+    const leftParentStyle = leftEyeRef.current.parentElement.style;
+    const rightParentStyle = rightEyeRef.current.parentElement.style;
+
+    const bodyStyle = window.getComputedStyle(document.body);
+
+    let x1 =
+      parseFloat(bodyStyle.width) / 2 -
+      parseInt(bodyStyle.getPropertyValue("--absPos"));
+    let y1 = parseFloat(bodyStyle.height) / 2;
+    let angle1 = Math.atan2(e.pageY - y1, e.pageX - x1);
+
+    let x2 =
+      parseFloat(bodyStyle.width) / 2 +
+      parseInt(bodyStyle.getPropertyValue("--absPos"));
+    let y2 = parseFloat(bodyStyle.height) / 2;
+    let angle2 = Math.atan2(e.pageY - y2, e.pageX - x2);
+
+    leftStyle.setProperty("--angle", `${angle1}`);
+    rightStyle.setProperty("--angle", `${angle2}`);
+
+    leftParentStyle.setProperty("--angle", `${angle1}`);
+    rightParentStyle.setProperty("--angle", `${angle2}`);
+
     if (beingResized) {
       // setFocus(elem, appWindows);
       resize(e.pageX, e.pageY, resizeProps);
@@ -98,6 +127,20 @@ function App() {
   ));
   return (
     <>
+      <div className="eye-cont leftEye">
+        <div
+          className="cursor-follower leftEye"
+          id="leftEye"
+          ref={leftEyeRef}
+        ></div>
+      </div>
+      <div className="eye-cont rightEye">
+        <div
+          className="cursor-follower rightEye"
+          id="rightEye"
+          ref={rightEyeRef}
+        ></div>
+      </div>
       {deskIcons}
       <NavBar
         openApps={openApps}

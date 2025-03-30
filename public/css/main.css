@@ -3,6 +3,42 @@ html {
     overflow: hidden;
 }
 
+body{
+--eyeDiam: 45px;
+--movableEyeRadius: calc((var(--contDiam) - var(--eyeDiam)) / 2 + 1px);
+--movableContRadius: 10px;
+--contDiam: 90px;
+--absPos : 90px;
+}
+.eye-cont
+{
+    --angle:0;
+    top: calc(50% - 50px + var(--movableContRadius) * sin(var(--angle) * 1rad));
+    left: calc(50% - 50px + var(--pos) + var(--movableContRadius) * cos(var(--angle) * 1rad));
+    width: var(--contDiam);
+    height: var(--contDiam);
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+}
+.cursor-follower
+{
+    --angle:0;
+    position: absolute;
+    top: calc((var(--contDiam) - var(--eyeDiam)) / 2 + var(--movableEyeRadius) * sin(var(--angle) * 1rad));
+    left: calc((var(--contDiam) - var(--eyeDiam)) / 2 + var(--movableEyeRadius) * cos(var(--angle) * 1rad));
+    border-radius: 50%;
+    width: var(--eyeDiam);
+    height: var(--eyeDiam);
+    background-color: black;
+    transition: top 0.1s, left, 0.1s
+}
+.leftEye{
+    --pos: calc(-1 * var(--absPos));
+}
+.rightEye{
+    --pos: var(--absPos);
+}
 body :not(.window-cont, .nav) {
     z-index: 0;
 }
