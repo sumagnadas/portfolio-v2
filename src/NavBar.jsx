@@ -7,7 +7,7 @@ function DockApps({ openApps, focusApp, animations, setFocusApp }) {
       key={app.id}
       app={app}
       onclick={() => {
-        restore(animations, app.id);
+        restore(animations, app);
         setFocusApp(app.id);
       }}
       isFocus={focusApp === app.id}

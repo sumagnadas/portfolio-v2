@@ -15,6 +15,10 @@ const apps = [
   },
   { id: "random", name: "random app", img: "assets/test.png" },
 ];
+
+apps.forEach((app) => {
+  app.winRef = null;
+});
 let animations = [];
 function App() {
   const leftEyeRef = useRef(null);
@@ -72,7 +76,7 @@ function App() {
       // setFocus(elem, appWindows);
       resize(e.pageX, e.pageY, resizeProps);
     } else if (beingDragged) {
-      const appWindow = dragProps.window.current.parentElement;
+      const appWindow = dragProps.window.parentElement;
       let offsetX = dragProps.offset.x ?? e.pageX - appWindow.offsetLeft;
       let offsetY = dragProps.offset.y ?? e.pageY - appWindow.offsetTop;
 

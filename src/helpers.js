@@ -17,7 +17,7 @@ export function removeSelection() {// countering for the effect that pressing on
 }
 // resize the window accordingly
 export function resize(posX, posY, resizeProps) {
-    const appWindow = resizeProps.window.current;
+    const appWindow = resizeProps.window;
     if (resizeProps.size.x && resizeProps.move.x) {
         // cursor on the left side
         // dont move the window by resizing or anything if its already at the min width
@@ -43,7 +43,7 @@ export function resize(posX, posY, resizeProps) {
 }
 // hide the window into the dock
 export function hide(animations, winRef) {
-    const appWindow = winRef.current;
+    const appWindow = winRef;
     appWindow.classList.add('hidden');
 
     appWindow.style.minWidth = '0';
@@ -72,11 +72,12 @@ export function hide(animations, winRef) {
     // playing it will return it to its location
     // setTimeout(() => animations[id].pause(), 200);
 }
-export function restore(animations, id) {
-    let app_id = `window-${id}`;
-    const appWindow = document.getElementById(app_id);
+export function restore(animations, app) {
+    let app_id = `window-${app.id}`;
+    const appWindow = app.winRef;
     if (appWindow.classList.contains('hidden')) {
         // animations[id].play() // for later animation purposes
+        appWindow.parentElement.style.display = 'grid'
         setTimeout(() => {
             appWindow.parentElement.style.display = 'grid'
 
@@ -91,7 +92,7 @@ export function restore(animations, id) {
 }
 export const WindowContext = createContext()
 export function maxRestore(e, drag,winRef, prevState, setPrevState) {
-    const appWindow = winRef.current;
+    const appWindow = winRef;
     if (!appWindow.classList.contains('max') && !drag) {
         // save eveything of the previous state to varbiables
         setPrevState({
@@ -136,7 +137,7 @@ export function maxRestore(e, drag,winRef, prevState, setPrevState) {
             appWindow.parentElement.style.top = `${prevState.top}px`;
         }
         // set everything back to normal
-        appWindow.parentElement.style.display = 'grid';
+        appWindow.parentElement.style.display = 'block';
         for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'block'; }
         appWindow.parentElement.style.removeProperty('height')
         appWindow.parentElement.style.removeProperty('width');

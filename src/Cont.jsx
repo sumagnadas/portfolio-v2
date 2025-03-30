@@ -18,7 +18,11 @@ function Cont({
   beingDragged,
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
-  let contRef = useRef(null);
+  let contRef = useRef();
+  const refCallback = (node) => {
+    app.winRef = node;
+    return () => {};
+  };
   return (
     <>
       <div
@@ -27,8 +31,10 @@ function Cont({
         ref={contRef}
         onClick={(e) => selection(e, contRef)}
         onDoubleClick={() => {
-          setIsWindow(true);
-          updateOpenApps([...openApps, app]);
+          if (!isWindow) {
+            setIsWindow(true);
+            updateOpenApps([...openApps, app]);
+          }
           setFocusApp(app.id);
         }}
       >
@@ -49,6 +55,7 @@ function Cont({
           setFocusApp={setFocusApp}
           animations={animations}
           beingDragged={beingDragged}
+          refCallback={refCallback}
         ></Window>
       )}
     </>
