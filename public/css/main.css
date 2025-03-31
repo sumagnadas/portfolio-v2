@@ -13,8 +13,8 @@ body{
 .eye-cont
 {
     --angle:0;
-    top: calc(50% - 50px + var(--movableContRadius) * sin(var(--angle) * 1rad));
-    left: calc(50% - 50px + var(--pos) + var(--movableContRadius) * cos(var(--angle) * 1rad));
+    top: calc(50% - var(--contDiam) / 2 + var(--movableContRadius) * sin(var(--angle) * 1rad));
+    left: calc(50% - var(--contDiam) / 2 + var(--pos) + var(--movableContRadius) * cos(var(--angle) * 1rad));
     width: var(--contDiam);
     height: var(--contDiam);
     position: absolute;

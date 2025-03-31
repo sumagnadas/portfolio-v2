@@ -17,6 +17,10 @@ const apps = [
 ];
 let animations = [];
 function App() {
+  const [leftPositions, setLeft] = useImmer({});
+  const [rightPositions, setRight] = useImmer({});
+  const [leftContPositions, setLeftCont] = useImmer({});
+  const [rightContPositions, setRightCont] = useImmer({});
   const leftEyeRef = useRef(null);
   const rightEyeRef = useRef(null);
   const [beingResized, setResized] = useImmer(false);
@@ -127,18 +131,88 @@ function App() {
   ));
   return (
     <>
-      <div className="eye-cont leftEye">
+      <div
+        className="eye-cont leftEye"
+        onMouseMove={(e) => {
+          setLeftCont({
+            left: `${
+              document.body.offsetWidth / 2 -
+              135 +
+              (e.pageX - (e.currentTarget.offsetLeft + 45)) / 4.5
+            }px`,
+            top: `${
+              document.body.offsetHeight / 2 -
+              45 +
+              (e.pageY - (e.currentTarget.offsetTop + 45)) / 4.5
+            }px`,
+          });
+          if (
+            Math.sqrt(
+              (e.pageX - (e.currentTarget.offsetLeft + 45)) ** 2 +
+                (e.pageY - (e.currentTarget.offsetTop + 45)) ** 2
+            ) <= 22.5
+          ) {
+            setLeft({
+              left: `${e.pageX - e.currentTarget.offsetLeft - 22.5}px`,
+              top: `${e.pageY - e.currentTarget.offsetTop - 22.5}px`,
+            });
+          } else {
+            () => setLeft({});
+          }
+        }}
+        onMouseLeave={() => {
+          setLeft({});
+          setLeftCont({});
+        }}
+        style={leftContPositions}
+      >
         <div
           className="cursor-follower leftEye"
           id="leftEye"
           ref={leftEyeRef}
+          style={leftPositions}
         ></div>
       </div>
-      <div className="eye-cont rightEye">
+      <div
+        className="eye-cont rightEye"
+        onMouseMove={(e) => {
+          setRightCont({
+            left: `${
+              document.body.offsetWidth / 2 +
+              45 +
+              (e.pageX - (e.currentTarget.offsetLeft + 45)) / 4.5
+            }px`,
+            top: `${
+              document.body.offsetHeight / 2 -
+              45 +
+              (e.pageY - (e.currentTarget.offsetTop + 45)) / 4.5
+            }px`,
+          });
+          if (
+            Math.sqrt(
+              (e.pageX - (e.currentTarget.offsetLeft + 45)) ** 2 +
+                (e.pageY - (e.currentTarget.offsetTop + 45)) ** 2
+            ) <= 22.5
+          ) {
+            setRight({
+              left: `${e.pageX - e.currentTarget.offsetLeft - 22.5}px`,
+              top: `${e.pageY - e.currentTarget.offsetTop - 22.5}px`,
+            });
+          } else {
+            () => setRight({});
+          }
+        }}
+        onMouseLeave={() => {
+          setRight({});
+          setRightCont({});
+        }}
+        style={rightContPositions}
+      >
         <div
           className="cursor-follower rightEye"
           id="rightEye"
           ref={rightEyeRef}
+          style={rightPositions}
         ></div>
       </div>
       {deskIcons}
