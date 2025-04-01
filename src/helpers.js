@@ -136,7 +136,7 @@ export function maxRestore(e, drag,winRef, prevState, setPrevState) {
             appWindow.parentElement.style.top = `${prevState.top}px`;
         }
         // set everything back to normal
-        appWindow.parentElement.style.display = 'block';
+        appWindow.parentElement.style.display = 'grid';
         for (let x = 0; x < 9; x++) { if (x != 4) appWindow.parentElement.childNodes[x].style.display = 'block'; }
         appWindow.parentElement.style.removeProperty('height')
         appWindow.parentElement.style.removeProperty('width');
