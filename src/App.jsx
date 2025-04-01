@@ -17,6 +17,7 @@ const apps = [
 ];
 let animations = [];
 function App() {
+  const [theme, setTheme] = useImmer("dark");
   const [leftPositions, setLeft] = useImmer({});
   const [rightPositions, setRight] = useImmer({});
   const [leftContPositions, setLeftCont] = useImmer({});
@@ -221,6 +222,7 @@ function App() {
         focusApp={focusApp}
         animations={animations}
         setFocusApp={setFocusApp}
+        theme={theme}
       />
     </>
   );

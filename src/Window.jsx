@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 import { useImmer } from "use-immer";
 import { removeSelection, hide, maxRestore, winRefs } from "./helpers";
 const cursCols = ["w", "", "e"];

@@ -34,7 +34,7 @@ function Cont({
           setFocusApp(app.id);
         }}
       >
-        <Icon app={app} />
+        <Icon img={app.img} id={app.id} />
         <div className="name">{app.name}</div>
       </div>
       {isWindow && (

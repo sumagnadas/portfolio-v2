@@ -1,11 +1,11 @@
-export function Icon({ app, onclick, id, isFocus }) {
+export function Icon({ img, onclick, id, isFocus }) {
   return (
     <div
       className={"icon" + (isFocus ? " focusIcon" : "")}
       onClick={onclick}
       id={id}
     >
-      <img src={app.img} alt="text" />
+      <img src={img} alt="text" />
     </div>
   );
 }
