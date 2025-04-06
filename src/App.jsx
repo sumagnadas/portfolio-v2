@@ -5,19 +5,11 @@ import NavBar from "./NavBar";
 import { useImmer } from "use-immer";
 import { resize } from "./helpers";
 import { useRef } from "react";
+import { apps } from "./info";
 
-const apps = [
-  { id: "file", name: "hello", img: "assets/test.png" },
-  {
-    id: "TING",
-    name: "There Is NO Game Wrong Dimension",
-    img: "assets/test.png",
-  },
-  { id: "random", name: "random app", img: "assets/test.png" },
-];
 let animations = [];
 function App() {
-  const [theme, setTheme] = useImmer("dark");
+  const [theme, setTheme] = useImmer("light");
   const [leftPositions, setLeft] = useImmer({});
   const [rightPositions, setRight] = useImmer({});
   const [leftContPositions, setLeftCont] = useImmer({});

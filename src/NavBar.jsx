@@ -1,16 +1,7 @@
 import { Icon } from "./Icon";
 import { restore, winRefs } from "./helpers";
+import { socialLinks } from "./info";
 
-const socialLinks = [
-  { id: "github", link: "https://github.com/sumagnadas", file: "svg" },
-  { id: "linkedin", link: "https://linkedin.com/in/sumagnadas" },
-  { id: "leetcode", link: "https://leetcode.com/sumagnadas" },
-  {
-    id: "codeforces",
-    link: "https://codeforces.com/profile/sumagnadas",
-    file: "svg",
-  },
-];
 function DockApps({ openApps, focusApp, animations, setFocusApp }) {
   const appIcons = openApps.map((app) => (
     <Icon
@@ -47,7 +38,6 @@ function NavBar({ openApps, focusApp, animations, setFocusApp, theme }) {
       />
     );
   });
-  console.log(socialApps);
   return (
     <div className="nav">
       <div className="cont">
