@@ -1,5 +1,6 @@
 import { useImmer } from "use-immer";
 import { removeSelection, hide, maxRestore, winRefs } from "./helpers";
+import FolderView from "./FolderView";
 const cursCols = ["w", "", "e"];
 const cursRows = ["n", "", "s"];
 function Border({ app, id, updateResizeProps, children, setResized }) {
@@ -115,8 +116,13 @@ function Window({
   animations,
   beingDragged,
 }) {
+  const [history, setHistory] = useImmer([
+    { name: app.name, files: app.files, folders: app.folders },
+  ]);
   let app_id = "window-" + app.id;
   removeSelection();
+  let path = history.reduce((acc, curr) => acc + curr.name + "/", "");
+
   const [prevState, setPrevState] = useImmer({
     top: null,
     left: null,
@@ -159,7 +165,34 @@ function Window({
             setPrevState={setPrevState}
             beingDragged={beingDragged}
           />
-          Hello
+          <div style={{ flexDirection: "row", display: "flex" }}>
+            <div
+              style={{ height: "50px", width: "50px", display: "flex" }}
+              onClick={() => {
+                if (history.length > 1)
+                  setHistory((history) => {
+                    history.pop();
+                  });
+              }}
+            >
+              <img src="assets/icons/back.svg"></img>
+            </div>
+            <div
+              style={{
+                height: "50px",
+                width: "fit-content",
+                display: "inline flex",
+              }}
+            >
+              {path}
+            </div>
+          </div>
+          <FolderView
+            files={history.at(-1).files}
+            name={history.at(-1).name}
+            folders={history.at(-1).folders}
+            setHistory={setHistory}
+          />
         </div>
       </Border>
     </div>

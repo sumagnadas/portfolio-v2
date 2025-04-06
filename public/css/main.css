@@ -4,12 +4,46 @@ html {
 }
 
 body{
---eyeDiam: 45px;
+--eyeDiam: 55px;
 --movableEyeRadius: calc((var(--contDiam) - var(--eyeDiam)) / 2 + 1px);
 --movableContRadius: 10px;
---contDiam: 90px;
+--contDiam: 110px;
 --absPos : 90px;
 --height: 0px;
+--width:0px;
+--torchX: 50%;
+--torchY: 50%;
+color: #fff;
+}
+.folderview {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    min-width: calc(0.08 * var(--width));
+    width: calc(0.08 * var(--width));
+
+    margin: 10px;
+    margin-top: 0;
+}
+.content
+{
+    display: flex;
+    flex-direction: row;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+.black
+{
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    mask-image: radial-gradient(circle at left var(--torchX) top var(--torchY), transparent, black 100px, black 100%);
+    z-index: 4;
 }
 .eye-cont
 {
@@ -77,13 +111,15 @@ body :not(.window-cont, .nav) {
 body {
     width: 100%;
     height: 100%;
-    background-image: url('../assets/wall.jpg');
+    /* background-color: #cb9d06; */
+    background-color: #ca702c;
     margin: 0px;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    color: white;
+    color: black;
     user-select: none;
+    font-family: "Pixelify Sans", sans-serif;
 }
 
 .app {
@@ -108,18 +144,22 @@ body {
 }
 
 .window {
-    min-width: 10px;
-    min-height: 10px;
-    width: 200px;
-    height: 100px;
-    background-color: rgba(200, 44, 100, 0.4);
+    display: flex;
+    flex-direction: column;
+    min-width: calc((0.08 * var(--width) + 20px) * 2);
+
+    min-height: 200px;
+    width: auto;
+    height: auto;
+    /* background-color: rgb(0, 124, 161); */
+    background-color: rgb(189, 240, 255);
     overflow: hidden;
 }
 
 .title_bar {
-    width: 100%;
-    height: calc(var(--height) * 0.02);
-    background-color: grey;
+    min-width: 100%;
+    min-height: calc(var(--height) * 0.02);
+    background-color: #1b41d691;
     display: flex;
     flex-direction: row;
     justify-content: flex-end

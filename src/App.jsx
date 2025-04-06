@@ -39,6 +39,8 @@ function App() {
   });
   const [focusApp, setFocusApp] = useImmer("");
   document.body.onmousemove = (e) => {
+    document.body.style.setProperty("--torchX", `${e.pageX}px`);
+    document.body.style.setProperty("--torchY", `${e.pageY}px`);
     const leftStyle = leftEyeRef.current.style;
     const rightStyle = rightEyeRef.current.style;
 
@@ -127,27 +129,42 @@ function App() {
       <div
         className="eye-cont leftEye"
         onMouseMove={(e) => {
+          const bodyStyle = window.getComputedStyle(document.body);
+          const absPos = parseInt(bodyStyle.getPropertyValue("--absPos"));
+          const contRadius =
+            parseInt(bodyStyle.getPropertyValue("--contDiam")) / 2;
+          const eyeRadius =
+            parseInt(bodyStyle.getPropertyValue("--eyeDiam")) / 2;
+          const movableContRadius = parseInt(
+            bodyStyle.getPropertyValue("--movableContRadius")
+          );
+          // const eyeDiam
           setLeftCont({
             left: `${
               document.body.offsetWidth / 2 -
-              135 +
-              (e.pageX - (e.currentTarget.offsetLeft + 45)) / 4.5
+              absPos -
+              contRadius +
+              (movableContRadius *
+                (e.pageX - (e.currentTarget.offsetLeft + contRadius))) /
+                contRadius
             }px`,
             top: `${
               document.body.offsetHeight / 2 -
-              45 +
-              (e.pageY - (e.currentTarget.offsetTop + 45)) / 4.5
+              contRadius +
+              (movableContRadius *
+                (e.pageY - (e.currentTarget.offsetTop + contRadius))) /
+                contRadius
             }px`,
           });
           if (
             Math.sqrt(
-              (e.pageX - (e.currentTarget.offsetLeft + 45)) ** 2 +
-                (e.pageY - (e.currentTarget.offsetTop + 45)) ** 2
-            ) <= 22.5
+              (e.pageX - (e.currentTarget.offsetLeft + contRadius)) ** 2 +
+                (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
+            ) <= eyeRadius
           ) {
             setLeft({
-              left: `${e.pageX - e.currentTarget.offsetLeft - 22.5}px`,
-              top: `${e.pageY - e.currentTarget.offsetTop - 22.5}px`,
+              left: `${e.pageX - e.currentTarget.offsetLeft - eyeRadius}px`,
+              top: `${e.pageY - e.currentTarget.offsetTop - eyeRadius}px`,
             });
           } else {
             () => setLeft({});
@@ -169,27 +186,41 @@ function App() {
       <div
         className="eye-cont rightEye"
         onMouseMove={(e) => {
+          const bodyStyle = window.getComputedStyle(document.body);
+          const absPos = parseInt(bodyStyle.getPropertyValue("--absPos"));
+          const contRadius =
+            parseInt(bodyStyle.getPropertyValue("--contDiam")) / 2;
+          const eyeRadius =
+            parseInt(bodyStyle.getPropertyValue("--eyeDiam")) / 2;
+          const movableContRadius = parseInt(
+            bodyStyle.getPropertyValue("--movableContRadius")
+          );
           setRightCont({
             left: `${
               document.body.offsetWidth / 2 +
-              45 +
-              (e.pageX - (e.currentTarget.offsetLeft + 45)) / 4.5
+              absPos -
+              contRadius +
+              (movableContRadius *
+                (e.pageX - (e.currentTarget.offsetLeft + contRadius))) /
+                contRadius
             }px`,
             top: `${
               document.body.offsetHeight / 2 -
-              45 +
-              (e.pageY - (e.currentTarget.offsetTop + 45)) / 4.5
+              contRadius +
+              (movableContRadius *
+                (e.pageY - (e.currentTarget.offsetTop + contRadius))) /
+                contRadius
             }px`,
           });
           if (
             Math.sqrt(
-              (e.pageX - (e.currentTarget.offsetLeft + 45)) ** 2 +
-                (e.pageY - (e.currentTarget.offsetTop + 45)) ** 2
-            ) <= 22.5
+              (e.pageX - (e.currentTarget.offsetLeft + contRadius)) ** 2 +
+                (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
+            ) <= eyeRadius
           ) {
             setRight({
-              left: `${e.pageX - e.currentTarget.offsetLeft - 22.5}px`,
-              top: `${e.pageY - e.currentTarget.offsetTop - 22.5}px`,
+              left: `${e.pageX - e.currentTarget.offsetLeft - eyeRadius}px`,
+              top: `${e.pageY - e.currentTarget.offsetTop - eyeRadius}px`,
             });
           } else {
             () => setRight({});
@@ -216,6 +247,7 @@ function App() {
         setFocusApp={setFocusApp}
         theme={theme}
       />
+      {/* <div class="black"></div> */}
     </>
   );
 }
