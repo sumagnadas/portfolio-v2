@@ -15,7 +15,6 @@ function Cont({
   isFocus,
   setFocusApp,
   animations,
-  beingDragged,
 }) {
   const [isWindow, setIsWindow] = useImmer(false);
   let contRef = useRef();
@@ -29,30 +28,41 @@ function Cont({
         onDoubleClick={() => {
           if (!isWindow) {
             setIsWindow(true);
-            updateOpenApps([...openApps, app]);
+            let newApps = [
+              {
+                ...app,
+                priority: 1,
+                hidden: false,
+                win: (
+                  <Window
+                    key={app.id}
+                    app={app}
+                    beingResized={beingResized}
+                    updateResizeProps={updateResizeProps}
+                    setIsWindow={setIsWindow}
+                    updateOpenApps={updateOpenApps}
+                    setResized={setResized}
+                    setDragged={setDragged}
+                    updateDragProps={updateDragProps}
+                    isFocus={isFocus}
+                    setFocusApp={setFocusApp}
+                    animations={animations}
+                  ></Window>
+                ),
+              },
+              ...openApps,
+            ];
+            for (let index = 1; index < newApps.length; index++) {
+              newApps[index].priority += 1;
+            }
+            updateOpenApps(newApps);
+            setFocusApp(app.id);
           }
-          setFocusApp(app.id);
         }}
       >
         <Icon img={app.img} id={app.id} />
         <div className="name">{app.name}</div>
       </div>
-      {isWindow && (
-        <Window
-          app={app}
-          beingResized={beingResized}
-          updateResizeProps={updateResizeProps}
-          setIsWindow={setIsWindow}
-          updateOpenApps={updateOpenApps}
-          setResized={setResized}
-          setDragged={setDragged}
-          updateDragProps={updateDragProps}
-          isFocus={isFocus}
-          setFocusApp={setFocusApp}
-          animations={animations}
-          beingDragged={beingDragged}
-        ></Window>
-      )}
     </>
   );
 }

@@ -80,6 +80,7 @@ body :not(.window-cont, .nav) {
 
 #apps
 {
+    display: flex;
     border-left: 0px solid white;
 }
 .hidden
@@ -144,6 +145,7 @@ body {
 }
 
 .window {
+    box-shadow: -4px -4px grey;
     display: flex;
     flex-direction: column;
     min-width: calc((0.08 * var(--width) + 20px) * 2);

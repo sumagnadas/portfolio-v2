@@ -3,7 +3,7 @@
 import Cont from "./Cont";
 import NavBar from "./NavBar";
 import { useImmer } from "use-immer";
-import { resize } from "./helpers";
+import { resize, maxRestore } from "./helpers";
 import { useRef } from "react";
 import { apps } from "./info";
 
@@ -36,6 +36,8 @@ function App() {
       x: undefined,
       y: undefined,
     },
+    prevState: null,
+    setPrevState: null,
   });
   const [focusApp, setFocusApp] = useImmer("");
   document.body.onmousemove = (e) => {
@@ -71,6 +73,13 @@ function App() {
       // setFocus(elem, appWindows);
       resize(e.pageX, e.pageY, resizeProps);
     } else if (beingDragged) {
+      maxRestore(
+        e,
+        true,
+        dragProps.window,
+        dragProps.prevState,
+        dragProps.setPrevState
+      );
       const appWindow = dragProps.window.parentElement;
       let offsetX = dragProps.offset.x ?? e.pageX - appWindow.offsetLeft;
       let offsetY = dragProps.offset.y ?? e.pageY - appWindow.offsetTop;
@@ -121,9 +130,30 @@ function App() {
       isFocus={focusApp === app.id}
       setFocusApp={setFocusApp}
       animations={animations}
-      beingDragged={beingDragged}
     />
   ));
+  let openWindows = [...openApps];
+  let openWindow = [];
+  if (openWindows.length) {
+    if (focusApp !== openWindows[0].id) {
+      let focusWindow;
+      openWindows = openWindows.filter((elem) => {
+        if (elem.id === focusApp) {
+          focusWindow = elem;
+          return false;
+        } else return true;
+      });
+      focusWindow.priority = 1;
+      openWindows = [focusWindow, ...openWindows];
+      for (let index = 1; index < openWindows.length; index++)
+        openWindows[index].priority = index + 1;
+    }
+
+    openWindows = openWindows.filter((elem) => !elem.hidden);
+    for (let index = openWindows.length - 1; index >= 0; index--) {
+      openWindow.push(openWindows[index].win);
+    }
+  }
   return (
     <>
       <div
@@ -240,6 +270,7 @@ function App() {
         ></div>
       </div>
       {deskIcons}
+      {openWindow}
       <NavBar
         openApps={openApps}
         focusApp={focusApp}

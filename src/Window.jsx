@@ -57,7 +57,7 @@ function TitleBar({
   animations,
   prevState,
   setPrevState,
-  beingDragged,
+  setFocusApp,
 }) {
   return (
     <div
@@ -66,16 +66,8 @@ function TitleBar({
         setDragged(true);
         updateDragProps((draft) => {
           draft.window = winRefs[app.id];
-        });
-      }}
-      onMouseMove={(e) => {
-        if (beingDragged)
-          maxRestore(e, true, winRefs[app.id], prevState, setPrevState);
-      }}
-      onMouseUp={() => {
-        setDragged(false);
-        updateDragProps((draft) => {
-          draft.offset = { x: undefined, y: undefined };
+          draft.prevState = prevState;
+          draft.setPrevState = setPrevState;
         });
       }}
     >
@@ -96,7 +88,11 @@ function TitleBar({
         className="title close"
         onClick={() => {
           setIsShown(false);
-          updateOpenApps((arr) => arr.filter((elem) => elem.id != id));
+          updateOpenApps((arr) => {
+            let newArr = arr.filter((elem) => elem.id != id);
+            if (newArr.length) setFocusApp(newArr[0].id);
+            return newArr;
+          });
         }}
       ></div>
     </div>
@@ -114,7 +110,6 @@ function Window({
   isFocus,
   setFocusApp,
   animations,
-  beingDragged,
 }) {
   const [history, setHistory] = useImmer([
     { name: app.name, files: app.files, folders: app.folders },
@@ -163,7 +158,7 @@ function Window({
             animations={animations}
             prevState={prevState}
             setPrevState={setPrevState}
-            beingDragged={beingDragged}
+            setFocusApp={setFocusApp}
           />
           <div style={{ flexDirection: "row", display: "flex" }}>
             <div
