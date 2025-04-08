@@ -147,6 +147,7 @@ function App() {
       openWindows = [focusWindow, ...openWindows];
       for (let index = 1; index < openWindows.length; index++)
         openWindows[index].priority = index + 1;
+      updateOpenApps(openWindows);
     }
 
     openWindows = openWindows.filter((elem) => !elem.hidden);
