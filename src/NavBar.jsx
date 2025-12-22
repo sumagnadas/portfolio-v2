@@ -4,15 +4,16 @@ import { socialLinks } from "./info";
 
 function DockApps({ openApps, focusApp, animations, setFocusApp }) {
   const appIcons = openApps.map((app) => (
-    <Icon
-      key={app.id}
-      img={app.img}
-      onclick={() => {
-        restore(animations, app.id, winRefs[app.id]);
-        setFocusApp(app.id);
-      }}
-      isFocus={focusApp === app.id}
-    ></Icon>
+    <div className="nav-app" key={app.id}>
+      <Icon
+        img={app.img}
+        onclick={() => {
+          restore(animations, app.id, winRefs[app.id]);
+          setFocusApp(app.id);
+        }}
+        isFocus={focusApp === app.id}
+      ></Icon>
+    </div>
   ));
   return (
     <div
@@ -30,12 +31,13 @@ function NavBar({ openApps, focusApp, animations, setFocusApp, theme }) {
   const socialApps = socialLinks.map((social) => {
     const img = `assets/${social.id}-${theme}.${social.file ?? "png"}`;
     return (
-      <Icon
-        key={social.id}
-        img={img}
-        id={social.id}
-        onclick={() => open(social.link)}
-      />
+      <div className="nav-app" key={social.id}>
+        <Icon
+          img={img}
+          id={social.id}
+          onclick={() => open(social.link)}
+        />
+      </div>
     );
   });
   return (

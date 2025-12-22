@@ -3,18 +3,19 @@ html {
     overflow: hidden;
 }
 
-body{
---eyeDiam: 55px;
---movableEyeRadius: calc((var(--contDiam) - var(--eyeDiam)) / 2 + 1px);
---movableContRadius: 10px;
---contDiam: 110px;
---absPos : 90px;
---height: 0px;
---width:0px;
---torchX: 50%;
---torchY: 50%;
-color: #fff;
+body {
+    --eyeDiam: 55px;
+    --movableEyeRadius: calc((var(--contDiam) - var(--eyeDiam)) / 2 + 1px);
+    --movableContRadius: 10px;
+    --contDiam: 110px;
+    --absPos: 90px;
+    --height: 0px;
+    --width: 0px;
+    --torchX: 50%;
+    --torchY: 50%;
+    color: #fff;
 }
+
 .folderview {
     box-sizing: border-box;
     display: flex;
@@ -26,15 +27,15 @@ color: #fff;
     margin: 10px;
     margin-top: 0;
 }
-.content
-{
+
+.content {
     display: flex;
     flex-direction: row;
     flex-flow: row;
     flex-wrap: wrap;
 }
-.black
-{
+
+.black {
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -45,9 +46,9 @@ color: #fff;
     mask-image: radial-gradient(circle at left var(--torchX) top var(--torchY), transparent, black 100px, black 100%);
     z-index: 4;
 }
-.eye-cont
-{
-    --angle:0;
+
+.eye-cont {
+    --angle: 0;
     top: calc(50% - var(--contDiam) / 2 + var(--movableContRadius) * sin(var(--angle) * 1rad));
     left: calc(50% - var(--contDiam) / 2 + var(--pos) + var(--movableContRadius) * cos(var(--angle) * 1rad));
     width: var(--contDiam);
@@ -56,9 +57,9 @@ color: #fff;
     background-color: white;
     border-radius: 50%;
 }
-.cursor-follower
-{
-    --angle:0;
+
+.cursor-follower {
+    --angle: 0;
     position: absolute;
     top: calc((var(--contDiam) - var(--eyeDiam)) / 2 + var(--movableEyeRadius) * sin(var(--angle) * 1rad));
     left: calc((var(--contDiam) - var(--eyeDiam)) / 2 + var(--movableEyeRadius) * cos(var(--angle) * 1rad));
@@ -68,25 +69,28 @@ color: #fff;
     background-color: black;
     transition: top 0.1s, left, 0.1s
 }
-.leftEye{
+
+.leftEye {
     --pos: calc(-1 * var(--absPos));
 }
-.rightEye{
+
+.rightEye {
     --pos: var(--absPos);
 }
+
 body :not(.window-cont, .nav) {
     z-index: 0;
 }
 
-#apps
-{
+#apps {
     display: flex;
     border-left: 0px solid white;
 }
-.hidden
-{
+
+.hidden {
     transition: all 0.2s;
 }
+
 .nav {
     z-index: 3;
 }
@@ -263,18 +267,22 @@ body {
 }
 
 
-.nav .icon:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    bottom: 40%;
-    height: 120%;
+.nav .nav-app:hover {
+    .icon {
+        background-color: rgba(255, 255, 255, 0.3);
+        bottom: 40%;
+        height: 120%;
+    }
 }
 
-.nav .icon:hover+.icon,
-.nav .icon:has(+.icon:hover),
-.nav .icon:hover+#apps .icon:first-of-type,
-.nav .icon:has(+#apps .icon:hover:first-of-type) {
-    bottom: 30%;
-    height: 110%;
+.nav .nav-app:hover+.nav-app,
+.nav .nav-app:has(+.nav-app:hover),
+.nav .nav-app:hover+#apps .nav-app:first-of-type,
+.nav .nav-app:has(+#apps .nav-app:first-of-type:hover) {
+    .icon {
+        bottom: 30%;
+        height: 110%;
+    }
 }
 
 @media screen and (max-width: 480px) and (orientation:portrait) {
