@@ -245,6 +245,7 @@ body {
     width: fit-content;
     height: 100%;
     justify-content: center;
+    backdrop-filter: blur(2px);
 
 }
 
@@ -283,6 +284,21 @@ body {
         bottom: 30%;
         height: 110%;
     }
+}
+
+.notif-bar>* {
+    display: flex;
+    box-sizing: content-box;
+    align-items: center;
+    height: 4vh;
+    padding: 0 10px;
+    border: 0
+}
+
+.notif-area:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 20%/100%;
+
 }
 
 @media screen and (max-width: 480px) and (orientation:portrait) {

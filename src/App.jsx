@@ -6,6 +6,7 @@ import { useImmer } from "use-immer";
 import { resize, maxRestore } from "./helpers";
 import { useRef } from "react";
 import { apps } from "./info";
+import NotifBar from "./NotifBar";
 
 let animations = [];
 function App() {
@@ -86,7 +87,7 @@ function App() {
 
       // moving the element now is all on the container
       appWindow.style.left = `${e.pageX - offsetX}px`;
-      appWindow.style.top = `${e.pageY - offsetY}px`;
+      appWindow.style.top = `max(${e.pageY - offsetY}px, 4vh)`;
 
       updateDragProps((draft) => {
         draft.offset.x = offsetX;
@@ -156,7 +157,8 @@ function App() {
     }
   }
   return (
-    <>
+    <div className="main-cont">
+      <NotifBar />
       <div
         className="eye-cont leftEye"
         onMouseMove={(e) => {
@@ -171,26 +173,24 @@ function App() {
           );
           // const eyeDiam
           setLeftCont({
-            left: `${
-              document.body.offsetWidth / 2 -
+            left: `${document.body.offsetWidth / 2 -
               absPos -
               contRadius +
               (movableContRadius *
                 (e.pageX - (e.currentTarget.offsetLeft + contRadius))) /
-                contRadius
-            }px`,
-            top: `${
-              document.body.offsetHeight / 2 -
+              contRadius
+              }px`,
+            top: `${document.body.offsetHeight / 2 -
               contRadius +
               (movableContRadius *
                 (e.pageY - (e.currentTarget.offsetTop + contRadius))) /
-                contRadius
-            }px`,
+              contRadius
+              }px`,
           });
           if (
             Math.sqrt(
               (e.pageX - (e.currentTarget.offsetLeft + contRadius)) ** 2 +
-                (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
+              (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
             ) <= eyeRadius
           ) {
             setLeft({
@@ -227,26 +227,24 @@ function App() {
             bodyStyle.getPropertyValue("--movableContRadius")
           );
           setRightCont({
-            left: `${
-              document.body.offsetWidth / 2 +
+            left: `${document.body.offsetWidth / 2 +
               absPos -
               contRadius +
               (movableContRadius *
                 (e.pageX - (e.currentTarget.offsetLeft + contRadius))) /
-                contRadius
-            }px`,
-            top: `${
-              document.body.offsetHeight / 2 -
+              contRadius
+              }px`,
+            top: `${document.body.offsetHeight / 2 -
               contRadius +
               (movableContRadius *
                 (e.pageY - (e.currentTarget.offsetTop + contRadius))) /
-                contRadius
-            }px`,
+              contRadius
+              }px`,
           });
           if (
             Math.sqrt(
               (e.pageX - (e.currentTarget.offsetLeft + contRadius)) ** 2 +
-                (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
+              (e.pageY - (e.currentTarget.offsetTop + contRadius)) ** 2
             ) <= eyeRadius
           ) {
             setRight({
@@ -280,7 +278,7 @@ function App() {
         theme={theme}
       />
       {/* <div class="black"></div> */}
-    </>
+    </div >
   );
 }
 
